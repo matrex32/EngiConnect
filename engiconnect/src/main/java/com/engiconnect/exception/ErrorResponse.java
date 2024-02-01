@@ -3,19 +3,31 @@ package com.engiconnect.exception;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.List;
 
+/**
+ * The ErrorResponse class represents a standardized structure for error messages
+ * @author Denis
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorResponse {
 
-	@Setter
+	/**
+	 * It represents the internal error code
+	 */
 	private int internalErrorCode;
 	
-	@Setter
+	/**
+	 * It represents the specific error message
+	 */
 	private String errorMessage;
 	
-	@Setter
+	/**
+	 * It represents the ID of the error message
+	 */
 	private String messageId;
+	
+	private List<InputValidationError> errors;
 }

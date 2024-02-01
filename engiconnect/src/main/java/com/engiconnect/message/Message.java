@@ -45,6 +45,11 @@ public enum Message {
 	 * ID corresponding to the message indicating that the field is empty.
 	 */
 	EMPTY_FIELD("EMPTY_FIELD", "Please provide a non-empty value."),
+	
+	/**
+	 * ID corresponding to the message indicating that the validation failed.
+	 */
+	THE_CURRENT_REQUEST_FAILED("THE_CURRENT_REQUEST_FAILED", "The current request failed."),
 
 	/**
 	 * ID corresponding to the message indicating that the field is too short.
