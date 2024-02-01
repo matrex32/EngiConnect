@@ -1,5 +1,7 @@
 package com.engiconnect.model;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -53,6 +55,6 @@ public class User {
 	 *  It will be automatically saved in the database upon the creation of a new account.
 	 */	
 	@Column(name = "registration_date")
-	private String registrationDate;
+	private Timestamp registrationDate;
 
 }

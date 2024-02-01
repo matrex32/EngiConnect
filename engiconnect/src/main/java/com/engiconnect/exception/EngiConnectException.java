@@ -26,7 +26,7 @@ public class EngiConnectException extends RuntimeException {
 	private final InternalErrorCode errorCode;
 	
 	/**
-	 * Constructs a new VibeFlowException with the specified detail message, HTTP status, and error code.
+	 * Constructs a new EngiConnectException with the specified detail message, HTTP status, and error code.
 	 * 
 	 * @param message the detail message of the error
 	 * @param status the status of the HTTP response
