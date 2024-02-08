@@ -2,6 +2,7 @@ package com.engiconnect.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.engiconnect.exception.EngiConnectException;
@@ -28,19 +29,26 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	public com.engiconnect.model.User registerUser(User newUser) {
 		
 		if(userRepository.existsByEmail(newUser.getEmail())) {
 			throw new EngiConnectException(Message.EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT, InternalErrorCode.EMAIL_ALREADY_EXISTS);
 		}
 		
-		newUser.setPassword(newUser.getPassword());
+		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		newUser.setRegistrationDate(DateUtility.getCurrentUTCTimestamp());
 		
 		newUser = userRepository.save(newUser);
 		
 		return newUser;
 		
+	}
+	
+	public User getUserByEmail(String email) {
+		return userRepository.findByEmail(email);
 	}
 	
 }
