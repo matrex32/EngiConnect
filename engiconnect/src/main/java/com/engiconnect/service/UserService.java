@@ -249,4 +249,21 @@ public class UserService {
 		
 		return currentUser;
 	}
+	
+	public void validateToken(String token) {
+	    Claims claims;
+	    try {
+	        claims = jwtService.parseToken(token);
+	    } catch (Exception e) {
+	        throw new EngiConnectException(Message.INVALID_TOKEN, HttpStatus.BAD_REQUEST, InternalErrorCode.INVALID_TOKEN);
+	    }
+
+	    Integer userId = claims.get(TokenClaim.USER_ID.getName(), Integer.class);
+
+	    if (userId == null ) {
+	        throw new EngiConnectException(Message.INVALID_TOKEN, HttpStatus.BAD_REQUEST, InternalErrorCode.INVALID_TOKEN);
+	    }
+
+	}
+
 }

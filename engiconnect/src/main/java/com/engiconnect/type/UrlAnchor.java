@@ -34,6 +34,11 @@ public enum UrlAnchor {
 	 * Represents the anchor for a user who is already confirmed.
 	 */
 	USER_ALREADY_CONFIRMED("/login#user-already-confirmed"),
+	
+	/**
+	 * Represents the view for the reset password
+	 */
+	RESET_PASSWORD("/reset-password"),
 
 	/**
 	 * Represents the anchor for a user who is unconfirmed

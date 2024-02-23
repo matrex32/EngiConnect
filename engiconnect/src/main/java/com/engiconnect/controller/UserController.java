@@ -183,4 +183,31 @@ public class UserController {
     	
     	return userConverter.entityToDto(forgottenUser);
     }
+    
+    @GetMapping("/redirect-reset-password")
+    public RedirectView redirectResetPasswordForm(@RequestParam String token) {
+
+    	if(token == null) {
+    		return new RedirectView(UrlAnchor.INVALID_TOKEN.getAnchor());
+    	}
+    	
+    	try {
+            userService.validateToken(token);
+            System.out.println(token);
+            return new RedirectView("/reset-password?token=" + token);
+            
+        } catch (EngiConnectException e) {
+            String messageId = e.getMessageId();
+            
+            if(messageId.equals(Message.INVALID_TOKEN.getId())) {
+            	return new RedirectView(UrlAnchor.INVALID_TOKEN.getAnchor());
+            	
+            } else if(messageId.equals(Message.TOKEN_EXPIRED.getId())) {
+            	return new RedirectView(UrlAnchor.TOKEN_EXPIRED.getAnchor());
+            	
+            } else {
+            	return new RedirectView("/reset-password");
+            }
+        }
+    }
 }

@@ -58,7 +58,7 @@ public class JwtService {
 		
 	    Map<TokenClaim, Object> claims = new HashMap<>();
 	    claims.put(TokenClaim.USER_ID, userId);
-
+	    
 	    return generateToken(claims);
 	}
 
