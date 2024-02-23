@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.engiconnect.exception.EmailNotConfirmedException;
 import com.engiconnect.message.Message;
 
 /**
@@ -36,6 +37,10 @@ public class EngiConnectUserDetailsService implements UserDetailsService {
 		
 		if(appUser == null) {
 			throw new UsernameNotFoundException(Message.USER_NOT_FOUND.getMessage());
+		}
+		
+		if("new".equals(appUser.getStatus())) {
+			throw new EmailNotConfirmedException(Message.EMAIL_NOT_CONFIRMED.getMessage());
 		}
 		
 		UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(appUser.getEmail())

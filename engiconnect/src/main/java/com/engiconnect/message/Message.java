@@ -45,22 +45,67 @@ public enum Message {
 	 * ID corresponding to the message indicating that the field is empty.
 	 */
 	EMPTY_FIELD("EMPTY_FIELD", "Please provide a non-empty value."),
-	
-	/**
-	 * ID corresponding to the message indicating that the validation failed.
-	 */
-	THE_CURRENT_REQUEST_FAILED("THE_CURRENT_REQUEST_FAILED", "The current request failed."),
 
 	/**
 	 * ID corresponding to the message indicating that the field is too short.
 	 */
 	SHORT_FIELD("SHORT_FIELD", "Input field is too short. Please enter a longer value."),
-	
+
 	/**
 	 * ID corresponding to the message indicating that the email or password are incorrect
 	 */
-	USER_NOT_FOUND("USER_NOT_FOUND", "Incorrect email or password.");
+	USER_NOT_FOUND("USER_NOT_FOUND", "Incorrect email or password."),
 
+	/**
+	 * ID corresponding to the message indicating that the validation failed.
+	 */
+	INPUT_VALIDATION_FAILED("INPUT_VALIDATION_FAILED", "Input validation failed."),
+	
+	/**
+	 * ID corresponding to the message indicating that the password is incorrect.
+	 */
+	INCORRECT_PASSWORD("INCORRECT_PASSWORD","Incorrect password."),
+	
+	/**
+	 * ID corresponding to the message indicating that the new password is the same as the old one
+	 */
+	PASSWORD_SAME_AS_OLD("PASSWORD_SAME_AS_OLD", "The new password is the same as the old one."),
+	
+	/**
+	 * ID corresponding to the message indicating that the user is not authenticated
+	 */
+	USER_NOT_AUTHENTICATED("USER_NOT_AUTHENTICATED", "User not authenticated."),
+
+	/**
+	 * ID corresponding to the message indicating that the user was already confirmed
+	 */
+	USER_ALREADY_CONFIRMED("USER_ALREADY_CONFIRMED", "The user has already been confirmed."),
+
+	/**
+	 * ID corresponding to the message indicating that the link has expired
+	 */
+	TOKEN_EXPIRED("TOKEN_EXPIRED", "The confirmation link has expired"),
+
+	/**
+	 * ID corresponding to the message indicating that the link is invalid
+	 */
+	INVALID_TOKEN("INVALID_TOKEN", "The confirmation link is invalid."),
+
+	/**
+	 * ID corresponding to the message indicating that the email is not confirmed
+	 */
+	EMAIL_NOT_CONFIRMED("EMAIL_NOT_CONFIRMED", "Email not confirmed."),
+	
+	/**
+	 * ID corresponding to the message indicating that the validation failed.
+	 */
+	THE_CURRENT_REQUEST_FAILED("THE_CURRENT_REQUEST_FAILED", "The current request failed."),
+	
+	/**
+	 * ID corresponding to the message indicating that the email does not exist in the database
+	 */
+	USER_DOESNT_EXIST("USER_DOESNT_EXIST", "This user doesn't exist");
+	
 	/**
 	 * Unique identifier corresponding to each type of message.
 	 */

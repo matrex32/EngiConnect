@@ -16,7 +16,7 @@ export default function AuthContainer() {
         <Grid container direction="column">
             {/* Header Section */}
             <Grid item container>
-                <AppHeader/>
+                <AppHeader  showLogoutButton = {false}/>
             </Grid>
 
               {/* Authentication Forms Section */}
