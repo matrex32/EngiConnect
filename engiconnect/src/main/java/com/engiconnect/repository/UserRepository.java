@@ -3,6 +3,7 @@ package com.engiconnect.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.engiconnect.model.User;
 
+import java.util.List;
 /**
  * The com.engiconnect.repository package contains interfaces and classes related to the repository layer of the application.
  *
@@ -38,4 +39,10 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	 */
 	public User findById(int id);
 	
+	/**
+	 * Finds a User entity in the database by status
+	 * @param status The status of the User entity to find in the database
+	 * @return A User entity that matches the provided status
+	 */
+	public List<User> findByStatus(String status);
 }

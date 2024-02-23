@@ -43,7 +43,7 @@ public enum InternalErrorCode {
 	/**
 	 * The error that occurs when the current request validation fails.
 	 */
-	THE_CURRENT_REQUEST_FAILED(1008),
+	THE_CURRENT_REQUEST_VALIDATION_FAILED(1008),
 	
 	/**
 	 * The error that occurs when the users isn't found when he trying to log in.
@@ -58,7 +58,37 @@ public enum InternalErrorCode {
 	/**
 	 * The error that occurs when the user inserts the same password as the old one
 	 */
-	PASSWORD_SAME_AS_OLD(1011);
+	PASSWORD_SAME_AS_OLD(1011),
+	
+	/**
+	 * The error that occurs when the users isn't authenticated
+	 */
+	USER_NOT_AUTHENTICATED(1012),
+	
+	/**
+	 * The error that occurs when the user is already confirmed
+	 */
+	USER_ALREADY_CONFIRMED(1013),
+	
+	/**
+	 * The error that occurs when the token is expired
+	 */
+	TOKEN_EXPIRED(1014),
+	
+	/**
+	 * The error that occurs when the token is invalid
+	 */
+	INVALID_TOKEN(1015),
+	
+	/**
+	 * The error that occurs the current request failed
+	 */
+	THE_CURRENT_REQUEST_FAILED(1016),
+	
+	/**
+	 * The error that occurs when the email does not exist
+	 */
+	USER_DOESNT_EXIST(1017);
 	
 	/**
 	 * It represents the internal error code

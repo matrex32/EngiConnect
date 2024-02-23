@@ -56,5 +56,17 @@ public class User {
 	 */	
 	@Column(name = "registration_date")
 	private Timestamp registrationDate;
+	
+	/**
+	 * The status of the user
+	 */
+	@Column(name = "status")
+	private String status;
 
+	
+	/**
+	 * The deletion date of the user
+	 */
+	@Column(name = "deletion_date")
+	private Timestamp deletionDate;
 }
