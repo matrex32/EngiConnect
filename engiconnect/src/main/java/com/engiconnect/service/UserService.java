@@ -15,6 +15,7 @@ import com.engiconnect.config.EngiConnectPropertiesConfig;
 import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
+import com.engiconnect.dto.ResetPasswordDto;
 import com.engiconnect.dto.UpdateUserNameDto;
 import com.engiconnect.events.RegistrationEvent;
 import com.engiconnect.exception.InternalErrorCode;
@@ -250,6 +251,11 @@ public class UserService {
 		return currentUser;
 	}
 	
+	/**
+	 * Method used to validate the token
+	 * 
+	 * @param token
+	 */
 	public void validateToken(String token) {
 	    Claims claims;
 	    try {
@@ -263,7 +269,34 @@ public class UserService {
 	    if (userId == null ) {
 	        throw new EngiConnectException(Message.INVALID_TOKEN, HttpStatus.BAD_REQUEST, InternalErrorCode.INVALID_TOKEN);
 	    }
-
 	}
 
+	/**
+	 * Reset the password of the user
+	 * 
+	 * @param resetPasswordDto Data transfer object containing details about the old and new passwords.
+	 */
+	public User resetPassword(ResetPasswordDto request) {
+	    Claims claims;
+	    try {
+	        claims = jwtService.parseToken(request.getToken());
+	    } catch (Exception e) {
+	        throw new EngiConnectException(Message.INVALID_TOKEN, HttpStatus.BAD_REQUEST, InternalErrorCode.INVALID_TOKEN);
+	    }
+
+	    Integer userId = claims.get(TokenClaim.USER_ID.getName(), Integer.class);
+
+	    if (userId == null ) {
+	        throw new EngiConnectException(Message.INVALID_TOKEN, HttpStatus.BAD_REQUEST, InternalErrorCode.INVALID_TOKEN);
+	    }
+
+	    User currentUser = userRepository.findById(userId)
+	            .orElseThrow(() -> new EngiConnectException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND, InternalErrorCode.USER_NOT_FOUND));
+
+	    if (request.getNewPassword() != null) {
+	        currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+	    }
+	    
+	    return userRepository.save(currentUser);
+	}
 }

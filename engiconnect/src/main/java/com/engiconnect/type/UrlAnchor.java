@@ -39,6 +39,16 @@ public enum UrlAnchor {
 	 * Represents the view for the reset password
 	 */
 	RESET_PASSWORD("/reset-password"),
+	
+	/**
+	 * Represents the view for the password successfully reset
+	 */
+	SUCCES_RESET_PASSWORD("/login#password-successfully-reset"),
+	
+	/**
+	 * Represents the view for the view when something went wrong
+	 */
+	SOMETHING_WENT_WRONG("/login#something-went-wrong"),
 
 	/**
 	 * Represents the anchor for a user who is unconfirmed

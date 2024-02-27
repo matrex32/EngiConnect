@@ -14,6 +14,7 @@ import com.engiconnect.converter.UserConverter;
 import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
+import com.engiconnect.dto.ResetPasswordDto;
 import com.engiconnect.dto.UpdateUserNameDto;
 import com.engiconnect.dto.UserDto;
 import com.engiconnect.exception.UserNotAuthenticatedException;
@@ -166,7 +167,7 @@ public class UserController {
             	return new RedirectView(UrlAnchor.USER_ALREADY_CONFIRMED.getAnchor());
             	
             } else {
-            	return new RedirectView("/login");
+            	return new RedirectView(UrlAnchor.SOMETHING_WENT_WRONG.getAnchor());
             }
         }
     }
@@ -184,6 +185,12 @@ public class UserController {
     	return userConverter.entityToDto(forgottenUser);
     }
     
+    /**
+     * This endpoint is used to confirm user registration through a given token.
+     * 
+     * @param token The token used for confirming user registration.
+     * @return RedirectView object directing to the corresponding URL based on the operation's outcome.
+     */
     @GetMapping("/redirect-reset-password")
     public RedirectView redirectResetPasswordForm(@RequestParam String token) {
 
@@ -193,7 +200,6 @@ public class UserController {
     	
     	try {
             userService.validateToken(token);
-            System.out.println(token);
             return new RedirectView("/reset-password?token=" + token);
             
         } catch (EngiConnectException e) {
@@ -206,8 +212,22 @@ public class UserController {
             	return new RedirectView(UrlAnchor.TOKEN_EXPIRED.getAnchor());
             	
             } else {
-            	return new RedirectView("/reset-password");
+            	return new RedirectView(UrlAnchor.SOMETHING_WENT_WRONG.getAnchor());
             }
         }
+    }
+    
+    /**
+     * Updates the password of the currently authenticated user based on the provided 
+     * 
+     * @param resetPasswordDto A DTO containing the new password.
+     */
+    @PutMapping("/reset-user-password")
+    public UserDto resetPassword(@RequestBody ResetPasswordDto request) {
+    	
+    		validationService.validate(request.getNewPassword());
+    		User resetUserPassword = userService.resetPassword(request);
+    		
+    		return userConverter.entityToDto(resetUserPassword);
     }
 }

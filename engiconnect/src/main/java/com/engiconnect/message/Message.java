@@ -89,7 +89,7 @@ public enum Message {
 	/**
 	 * ID corresponding to the message indicating that the link is invalid
 	 */
-	INVALID_TOKEN("INVALID_TOKEN", "The confirmation link is invalid."),
+	INVALID_TOKEN("INVALID_TOKEN", "The link is invalid."),
 
 	/**
 	 * ID corresponding to the message indicating that the email is not confirmed
@@ -100,6 +100,11 @@ public enum Message {
 	 * ID corresponding to the message indicating that the validation failed.
 	 */
 	THE_CURRENT_REQUEST_FAILED("THE_CURRENT_REQUEST_FAILED", "The current request failed."),
+	
+	/**
+	 * ID corresponding to the message indicating that the user isn't found
+	 */
+	USER_DOESNT_EXISTS("USER_NOT_FOUND", "User not found."),
 	
 	/**
 	 * ID corresponding to the message indicating that the email does not exist in the database

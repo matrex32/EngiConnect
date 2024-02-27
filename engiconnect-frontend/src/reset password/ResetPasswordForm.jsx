@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Snackbar, LinearProgress, Button, Alert, Grid, Card, CardHeader, CardContent, Typography } from '@mui/material';
 
 /**
@@ -32,6 +32,26 @@ function ResetPasswordForm() {
     // State variable indicating whether the Snackbar should display success or error severity.
     const [isSuccessSnackbar, setIsSuccessSnackbar] = useState(false);
 
+    // State variable storing the token from URL
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        document.title = "EngiConnect Reset Password";
+    }, []);
+
+    useEffect(() => {
+        const currentUrl = window.location.href;
+        
+        const url = new URL(currentUrl);
+        
+        const token = url.searchParams.get('token');
+        
+        if (token) {
+            setToken(token);
+        } else {
+            console.log('token');
+        }
+    }, []);
 
     /**
      * Handle input change event for text fields.
@@ -74,13 +94,19 @@ function ResetPasswordForm() {
      * @returns {Promise} A promise that resolves with the response data from the server.
      * @throws {Error} If the response from the server contains an errorMessage.
      */
-    const sendRegistrationRequest = (newUser) => {
-        return fetch('api/users/register', {
-            method: 'POST',
+    const sendResetPasswordRequest = () => {
+
+        const data = {
+            token: token,
+            newPassword: password,
+        };
+
+        return fetch('/api/users/reset-user-password', {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newUser),
+            body: JSON.stringify(data),
         })
             .then((response) => {
                 if (response.ok) {
@@ -89,7 +115,7 @@ function ResetPasswordForm() {
                     setisLoadingActive(false);
 
                     setIsSuccessSnackbar(true);
-                    setSnackbarMessage('Your password has been reset.');
+                    setSnackbarMessage('Your password has been reset. Please go back to the login page.');
                     setShowSnackbar(true);
                 }
                 return response.json();
@@ -156,12 +182,7 @@ function ResetPasswordForm() {
         if (validateInputs()) {
             setisLoadingActive(true);
 
-            // Create a new user object.
-            const newPassword = {
-                password: password.trim(),
-            };
-
-            sendNewPasswordRequest(newPassword);
+            sendResetPasswordRequest()
         }
 
     }
@@ -202,7 +223,7 @@ function ResetPasswordForm() {
                 <Grid item>
                     <TextField
                         id="password"
-                        label="Password"
+                        label="New Password"
                         type="password"
                         value={password}
                         onChange={handleInputChange}
@@ -216,7 +237,7 @@ function ResetPasswordForm() {
                 <Grid item>
                     <TextField
                         id="confirmPassword"
-                        label="Confirm Password"
+                        label="Confirm New Password"
                         type="password"
                         value={confirmPassword}
                         onChange={handleInputChange}

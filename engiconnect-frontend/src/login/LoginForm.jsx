@@ -30,8 +30,8 @@ function LoginForm({ toggleForgotPasswordForm }) {
     const hashMessages = {
         '#invalid-user': 'Invalid email or password',
         '#success-confirmation': 'The account has been successfully verified',
-        '#invalid-token': 'The confirmation link is invalid.',
-        '#token-expired': 'The confirmation link has expired',
+        '#invalid-token': 'Your link is invalid.',
+        '#token-expired': 'Your link has expired',
         '#user-already-confirmed': 'The user has already been confirmed.',
         '#unconfirmed-user': 'The user has not been confirmed'
     };
