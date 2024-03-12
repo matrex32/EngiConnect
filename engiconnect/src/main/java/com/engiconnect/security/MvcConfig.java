@@ -3,6 +3,7 @@ package com.engiconnect.security;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 /**
  * MVC Configuration class for registering specific view controllers.
@@ -22,4 +23,10 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/profile").setViewName("profile");
 		registry.addViewController("/reset-password").setViewName("reset");		
 	}
+	
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+        .addResourceLocations("file:///E:/EngiConnect/uploads/profile_picture/");
+    }
 }

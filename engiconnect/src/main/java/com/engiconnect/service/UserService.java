@@ -11,7 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.engiconnect.config.EngiConnectPropertiesConfig;
+import com.engiconnect.config.FileStorageConfig;
 import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
@@ -61,6 +69,9 @@ public class UserService {
 	
 	@Autowired
 	private EngiConnectPropertiesConfig engiConnectProperties;
+	
+	@Autowired
+	private FileStorageConfig fileStorageConfig;
 	
 	/**
 	 * Register a new user in the system.
@@ -299,4 +310,21 @@ public class UserService {
 	    
 	    return userRepository.save(currentUser);
 	}
+	
+	 public String saveProfileImage(MultipartFile image, User user) throws IOException {
+	        if (image.isEmpty()) {
+	            throw new IOException("Cannot save empty file");
+	        }
+
+	        Path uploadPath = Paths.get(fileStorageConfig.getUploadDir());
+	        if (!Files.exists(uploadPath)) {
+	            Files.createDirectories(uploadPath);
+	        }
+
+	        String filename = user.getId() + "_" + image.getOriginalFilename();
+	        Path filePath = uploadPath.resolve(filename);
+	        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+	        return Paths.get(fileStorageConfig.getUploadDir()).relativize(filePath).toString();
+	    }
 }

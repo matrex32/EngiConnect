@@ -78,7 +78,7 @@ function AppHeader({ showLogoutButton }) {
                                             <Grid item>
                                                 {/* Current user avatar */}
                                                 <EngiConnectAvatar
-                                                    name={currentUserData.name}
+                                                    profileImagePath={currentUserData.profileImagePath}
                                                     size={"40px"}
                                                 />
                                             </Grid>

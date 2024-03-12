@@ -69,4 +69,8 @@ public class User {
 	 */
 	@Column(name = "deletion_date")
 	private Timestamp deletionDate;
+	
+	@Column(name = "profile_image_path")
+	private String profileImagePath;
+
 }

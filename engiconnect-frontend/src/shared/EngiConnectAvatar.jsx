@@ -1,59 +1,89 @@
-import React from "react";
+import React, { useRef, useContext, useState, useEffect } from "react";
+import UserContext from "../profile/UserContext.jsx";
 
-import { Avatar } from "@mui/material";
+import { Avatar, Snackbar, Alert } from "@mui/material";
 
+function EngiConnectAvatar({ size }) {
+    const { currentUserData, updateCurrentUser } = useContext(UserContext);
+    const fileInputRef = useRef(null);
 
-/**
- * Generates an avatar with a color and initials based on a given name.
- *
- * @param {string} name - The name used to generate the avatar color and initials.
- * @returns {JSX.Element} The JSX representation of the OxygenAvatar component.
- */
-function EngiConnectAvatar( {name, size} ) {
-    /**
-     * Converts a string to a color code.
-     *
-     * @param {string} string - The input string.
-     * @returns {string} The color code generated from the input string.
-     */
-    const stringToColor = (string) => {
-        let hash = 0;
-        let i;
-    
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    // Acum utilizăm currentUserData direct de la context pentru inițializarea profileImagePath
+    const [profileImagePath, setProfileImagePath] = useState(currentUserData?.profileImagePath);
+
+    useEffect(() => {
+        // Această actualizare va fi declanșată ori de câte ori currentUserData se schimbă
+        setProfileImagePath(currentUserData?.profileImagePath);
+    }, [currentUserData]);
+
+    const handleAvatarClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const response = await fetch("api/users/profile-image", {
+                    method: "PUT",
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const updatedUserData = await response.json();
+                    updateCurrentUser(updatedUserData);
+                    setSnackbarMessage("Image uploaded successfully");
+                    setSnackbarSeverity('success');
+                    setShowSnackbar(true);
+                } else {
+                    const errorData = await response.json();
+                    setSnackbarMessage(errorData.message || "An error occurred while uploading the image.");
+                    setSnackbarSeverity('error');
+                    setShowSnackbar(true);
+                }
+            } catch (error) {
+                setSnackbarMessage(error.message);
+                setSnackbarSeverity('error');
+                setShowSnackbar(true);
+            }
         }
-    
-        let color = '#';
-    
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-    
-        return color;
-    }
-    
-    /**
-     * Generates an object with color and initials for the avatar.
-     *
-     * @param {string} name - The name used to generate the initials.
-     * @returns {Object} The object for the avatar.
-     */
-    const stringAvatar = (name) => {
-        return `${name.split(' ')[0][0] || ''}${name.split(' ')[1] ? name.split(' ')[1][0] : ''}`;
     };
 
     return (
-        // Render the Avatar component
-        <Avatar
-            children = {stringAvatar(name)}
-            sx= {{bgcolor: stringToColor(name), 
-                width: size, 
-                height: size, 
-                fontSize: `${parseInt(size) / 2.5}px`
-            }}
-        />
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            hidden
+            onChange={handleFileChange}
+            accept="image/*"
+          />
+          {profileImagePath ? (
+            <Avatar
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer", width: size, height: size }}
+              src={profileImagePath}
+              alt="Profile image"
+            />
+          ) : (
+            <Avatar
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer", width: size, height: size }}
+              sx={{ width: size, height: size }}
+            >
+            </Avatar>
+          )}
+          <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={() => setShowSnackbar(false)}>
+            <Alert onClose={() => setShowSnackbar(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </>
     );
 }
 

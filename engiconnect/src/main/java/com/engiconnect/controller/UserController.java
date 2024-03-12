@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 import com.engiconnect.converter.UserConverter;
 import com.engiconnect.dto.ChangePasswordDto;
@@ -81,7 +83,7 @@ public class UserController {
 			return userConverter.entityToDto(currentUser);
 
 		} catch (UserNotAuthenticatedException e) {
-			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null);
+			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null, null);
 		}
 	}
     
@@ -229,5 +231,18 @@ public class UserController {
     		User resetUserPassword = userService.resetPassword(request);
     		
     		return userConverter.entityToDto(resetUserPassword);
+    }
+    
+    @PutMapping("/profile-image")
+    public UserDto updateProfileImage(@RequestParam("image") MultipartFile image) {
+        User currentUser = userService.getCurrentUser();
+        try {
+            String imagePath = userService.saveProfileImage(image, currentUser);
+            currentUser.setProfileImagePath(imagePath);
+            User updatedUser = userService.updateUser(currentUser);
+            return userConverter.entityToDto(updatedUser);
+        } catch (IOException e) {
+            throw new RuntimeException("Problem with file upload", e);
+        }
     }
 }

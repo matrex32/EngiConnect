@@ -26,6 +26,14 @@ public class UserConverter {
 		userDto.setEmail(user.getEmail());
 		userDto.setStatus(user.getStatus());
 	    userDto.setDeletionDate(user.getDeletionDate());
+	    
+	    if (user.getProfileImagePath() != null && !user.getProfileImagePath().isEmpty()) {
+	        String baseUrl = "http://localhost:8080"; 
+	        String fullImageUrl = baseUrl + "/uploads/" + user.getProfileImagePath();
+	        userDto.setProfileImagePath(fullImageUrl);
+	    } else {
+	        userDto.setProfileImagePath(null);
+	    }
 		
 		return userDto;
 	}

@@ -15,6 +15,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ResetPasswordDto {
 	
+	/**
+	 * The unique token that is assigned to the user
+	 */
 	String token;
 	
 	/**

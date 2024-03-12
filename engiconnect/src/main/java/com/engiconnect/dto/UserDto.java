@@ -46,4 +46,7 @@ public class UserDto {
 	 * The deletion date of the user
 	 */
 	private Timestamp deletionDate;
+	
+	private String profileImagePath;
+
 }

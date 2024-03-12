@@ -23,7 +23,7 @@ export default function GeneralSection({ showMessage }) {
     const updateCurrentUser = userContext.updateCurrentUser;
 
     // State variable for holding the edited user name.
-    const [editedUserName, setEditedUserName] = useState(currentUserData.name);
+    const [editedUserName, setEditedUserName] = useState(currentUserData.name ?? '');
 
     // State variable for holding the error message related to the edited name.
     const [editedNameError, setEditedNameError] = useState('');
@@ -140,6 +140,8 @@ export default function GeneralSection({ showMessage }) {
                     <EngiConnectAvatar
                         name={currentUserData.name}
                         size={"100px"}
+                        profileImagePath={currentUserData.profileImagePath}
+
                     />
                 </Grid>
 
