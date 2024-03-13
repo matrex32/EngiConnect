@@ -312,18 +312,28 @@ public class UserService {
 	}
 	
 	 public String saveProfileImage(MultipartFile image, User user) throws IOException {
-	        if (image.isEmpty()) {
-	            throw new IOException("Cannot save empty file");
-	        }
+		 if (image.isEmpty()) {
+		        throw new IOException("Cannot save empty file");
+		    }
 
-	        Path uploadPath = Paths.get(fileStorageConfig.getUploadDir());
-	        if (!Files.exists(uploadPath)) {
-	            Files.createDirectories(uploadPath);
-	        }
+		    Path uploadPath = Paths.get(fileStorageConfig.getUploadDir());
+		    if (!Files.exists(uploadPath)) {
+		        Files.createDirectories(uploadPath);
+		    }
 
-	        String filename = user.getId() + "_" + image.getOriginalFilename();
-	        Path filePath = uploadPath.resolve(filename);
-	        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+		    if (user.getProfileImagePath() != null && !user.getProfileImagePath().isEmpty()) {
+		        Path existingFilePath = uploadPath.resolve(user.getProfileImagePath());
+		        try {
+		            Files.deleteIfExists(existingFilePath);
+		        } catch (IOException e) {
+		            throw new IOException("Failed to delete existing profile image", e);
+		        }
+		    }
+
+		    String filename = user.getId() + "_" + image.getOriginalFilename();
+		    Path filePath = uploadPath.resolve(filename);
+		    Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
 
 	        return Paths.get(fileStorageConfig.getUploadDir()).relativize(filePath).toString();
 	    }
