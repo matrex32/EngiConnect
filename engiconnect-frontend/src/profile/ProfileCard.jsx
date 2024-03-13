@@ -48,7 +48,7 @@ function ProfileCard() {
                 <Card>
                     {/* Header for displaying title*/}
                     <CardHeader
-                        title={"Profile"}
+                        title={"Profile settings"}
                     />
 
                     {/* Display loading process or user information */}

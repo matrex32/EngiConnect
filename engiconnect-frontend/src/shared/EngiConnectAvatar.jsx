@@ -3,7 +3,7 @@ import UserContext from "../profile/UserContext.jsx";
 
 import { Avatar, Snackbar, Alert, Grid } from "@mui/material";
 
-function EngiConnectAvatar({ size }) {
+function EngiConnectAvatar({ size, clickable = true}) {
     const { currentUserData, updateCurrentUser } = useContext(UserContext);
     const fileInputRef = useRef(null);
 
@@ -24,6 +24,7 @@ function EngiConnectAvatar({ size }) {
     }, [currentUserData]);
 
     const handleAvatarClick = () => {
+      if (!clickable) return
         fileInputRef.current.click();
     };
 
@@ -81,6 +82,7 @@ function EngiConnectAvatar({ size }) {
               style={{ cursor: "pointer", width: size, height: size }}
               src={profileImagePath}
               alt="Profile image"
+     
             />
           ) : (
             <Avatar

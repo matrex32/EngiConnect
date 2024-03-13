@@ -80,6 +80,7 @@ function AppHeader({ showLogoutButton }) {
                                                 <EngiConnectAvatar
                                                     profileImagePath={currentUserData.profileImagePath}
                                                     size={"40px"}
+                                                    clickable={false}
                                                 />
                                             </Grid>
                                         </Grid>
