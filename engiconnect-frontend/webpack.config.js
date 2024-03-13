@@ -80,5 +80,32 @@ module.exports = [
         },
       ],
     },
+  },
+
+  {
+    entry: './src/user-profile.js',
+    output: {
+      path: path.join(__dirname, '../engiconnect/src/main/resources/static/app'),
+      filename: 'user-profile.js',
+    },
+    mode: "development",
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+            },
+          },
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
   }
 ]

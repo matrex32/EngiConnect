@@ -73,6 +73,7 @@ public class WebSecurityConfiguration {
 				.usernameParameter("email")
 				.passwordParameter("password")
 				.failureHandler(authenticationFailureHandler())
+				.defaultSuccessUrl("/", true)
 				.permitAll())
 		.logout(logout -> logout.logoutSuccessUrl("/login"));
 		

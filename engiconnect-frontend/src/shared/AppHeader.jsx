@@ -28,6 +28,8 @@ function AppHeader({ showLogoutButton }) {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    console.log(showLogoutButton, currentUserData);
+
 
     return (
         /* App Bar for Header */
