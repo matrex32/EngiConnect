@@ -52,7 +52,7 @@ function EngiConnectAvatar({ size, clickable = true}) {
                     updateCurrentUser(updatedUserData);
                     
                     setIsSuccessSnackbar(true);
-                    setSnackbarMessage("Image uploaded successfully");
+                    setSnackbarMessage("Profile picture has been successfully changed");
                     setShowSnackbar(true);
                 } else {
                     const errorData = await response.json();

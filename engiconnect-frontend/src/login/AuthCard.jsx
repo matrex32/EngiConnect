@@ -3,6 +3,7 @@ import { Grid, Card, CardHeader, CardContent, Typography, Link } from '@mui/mate
 import LoginForm from './LoginForm.jsx';
 import RegistrationForm from './RegistrationForm.jsx';
 import EmailForgotPasswordForm from './EmailForgotPasswordForm.jsx';
+import '../css/BackgroundCard.css'
 
 /**
  * Component responsible for rendering the authentication card containing login and registration forms.
@@ -41,7 +42,7 @@ function AuthCard() {
         <Grid container justifyContent="center" alignItems="center">
             <Grid item xs={12} md={9} lg={5} xl={5} style={{ marginTop: 50 }}>
                 {/* Card for containing login/registration content */}
-                <Card>
+                <Card className='card-background'>
                     {/* Header for displaying title and the message from subheader */}
                     <CardHeader
                         title={showForgotPasswordForm ? 'Find your account' : (showLoginForm ? 'Log In' : 'Create New Account')}
@@ -51,7 +52,7 @@ function AuthCard() {
                                 {/* Subheader text */}
                                 <Grid item>
                                     <Typography>
-                                        {showForgotPasswordForm ? 'Please enter your email to search for your account.' : (showLoginForm ? "Don't have an Vibe Flow account?" : 'Already a member?')}
+                                        {showForgotPasswordForm ? 'Please enter your email to search for your account.' : (showLoginForm ? "Don't have an EngiConnect account?" : 'Already a member?')}
                                     </Typography>
                                 </Grid>
                                 {/* Link to toggle between login and registration forms */}

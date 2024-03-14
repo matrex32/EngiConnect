@@ -4,7 +4,7 @@ import "../css/GlobalStyle.css"
 import AppHeader from "../shared/AppHeader.jsx"
 import { Grid, LinearProgress } from "@mui/material"
 import UserProfileCard from "./UserProfileCard.jsx"
-import UserContext, { UserProvider } from "../profile/UserContext.jsx"
+import UserContext from "../profile/UserContext.jsx"
 
 /**
  * Component responsible for user authentication and rendering of both login and registration forms.

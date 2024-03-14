@@ -2,7 +2,7 @@ import React from "react";
 
 import EngiConnectAvatar from "../shared/EngiConnectAvatar.jsx";
 
-import { Grid, TextField, Button, LinearProgress, Typography } from "@mui/material";
+import { Grid, TextField, Button, LinearProgress, Typography, TextareaAutosize } from "@mui/material";
 
 import { useState, useContext } from "react";
 
@@ -122,7 +122,7 @@ export default function GeneralSection({ showMessage }) {
     const handleClickSaveButton = () => {
         if (editedUserName === currentUserData.name) {
             setIsEditActive(false);
-        } else if(validateEditedInputs()) {
+        } else if (validateEditedInputs()) {
             sendEditNameRequest();
         }
     }
@@ -147,6 +147,20 @@ export default function GeneralSection({ showMessage }) {
 
                 {/* Display user info */}
                 <Grid item container style={{ flexGrow: 1, flexBasis: 0 }} direction='column' gap='15px'>
+
+                    <Grid item>
+                        <TextField
+                            id="about-me"
+                            label="About me"
+                            variant="outlined"
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+
+                        />
+
+
+                    </Grid>
+
                     {/* Input field for showing and editing the name */}
                     <Grid item>
                         <TextField

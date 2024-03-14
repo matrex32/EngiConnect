@@ -6,6 +6,7 @@ import {
 import GeneralSection from './GeneralSection.jsx';
 import SecuritySection from './SecuritySection.jsx';
 import DeleteSection from './DeleteSection.jsx';
+import '../css/BackgroundCard.css'
 
 /**
  * Component responsible for rendering the profile card containing current user info.
@@ -45,10 +46,10 @@ function ProfileCard() {
         // Main container for the profile card
         <Grid container justifyContent="center" alignItems="center">
             <Grid item xs={12} md={10} lg={8} xl={6} style={{ marginTop: 50 }}>
-                <Card>
+                <Card className='card-background'>
                     {/* Header for displaying title*/}
                     <CardHeader
-                        title={"Profile settings"}
+                        title={"Settings"}
                     />
 
                     {/* Display loading process or user information */}

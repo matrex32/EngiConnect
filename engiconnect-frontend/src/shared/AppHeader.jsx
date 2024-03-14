@@ -33,7 +33,7 @@ function AppHeader({ showLogoutButton }) {
 
     return (
         /* App Bar for Header */
-        <AppBar position="static" style={{backgroundColor:'#529CFF'}}>
+        <AppBar position="static" style={{ backgroundColor: '#529CFF' }}>
             <Toolbar>
                 <Grid container justifyContent="space-between">
                     <Grid item container wrap="nowrap" style={{ maxWidth: 'fit-content', alignItems: 'center' }}>
@@ -66,15 +66,15 @@ function AppHeader({ showLogoutButton }) {
                             <Grid item>
                                 {/* Helper text */}
                                 <Tooltip title="Open menu">
-                                    <IconButton onClick={handleOpenUserMenu} sx = {{borderRadius: '0px'}}>
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ borderRadius: '0px' }}>
                                         <Grid container alignItems="center" style={{ borderLeft: "2px solid #A9A9A9" }}>
-                                            <Grid item style={{marginLeft: '7px'}}>
+                                            <Grid item style={{ marginLeft: '7px' }}>
                                                 {/* Current user name */}
-                                                <Typography variant="body1" style={{ fontSize:'15px', color: 'black' }}>
+                                                <Typography variant="body1" style={{ fontSize: '15px', color: 'black' }}>
                                                     {currentUserData.name}
-                                                 </Typography>
+                                                </Typography>
                                             </Grid>
-                                            <Grid item style={{marginRight : '5px'}}>
+                                            <Grid item style={{ marginRight: '5px' }}>
                                                 <ArrowDropDownIcon />
                                             </Grid>
                                             <Grid item>
@@ -106,37 +106,37 @@ function AppHeader({ showLogoutButton }) {
                                 >
                                     <MenuItem onClick={handleCloseUserMenu} style={{ padding: 0 }}>
                                         <Grid container direction="column">
-                                           
-                                        <Grid item>
-                                        <form>
-                                        <Button
-                                                onClick={() => window.location.href='/user-profile'}
-                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
-                                                Profile
-                                            </Button>
-                                        </form>
-                                        </Grid>
-                                        <Divider />
-                                        <Grid item>
-                                            <form>
-                                        <Button 
-                                                onClick={() => window.location.href='/'}
-                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
-                                                Settings
-                                            </Button>
-                                        </form>
-                                        </Grid>
-                                        <Divider />
-                                        <Grid item>
-                                        <form action="/logout" method="post">
-                                            {/* Log out button */}
-                                            <Button 
-                                                type="submit" 
-                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
-                                                Log out
-                                            </Button>
-                                        </form>
-                                        </Grid>
+
+                                            <Grid item>
+                                                <form>
+                                                    <Button
+                                                        onClick={() => window.location.href = '/user-profile'}
+                                                        style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                        Profile
+                                                    </Button>
+                                                </form>
+                                            </Grid>
+                                            <Divider />
+                                            <Grid item>
+                                                <form>
+                                                    <Button
+                                                        onClick={() => window.location.href = '/'}
+                                                        style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                        Settings
+                                                    </Button>
+                                                </form>
+                                            </Grid>
+                                            <Divider />
+                                            <Grid item>
+                                                <form action="/logout" method="post">
+                                                    {/* Log out button */}
+                                                    <Button
+                                                        type="submit"
+                                                        style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                        Log out
+                                                    </Button>
+                                                </form>
+                                            </Grid>
                                         </Grid>
                                     </MenuItem>
                                 </Menu>

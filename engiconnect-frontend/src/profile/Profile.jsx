@@ -15,7 +15,7 @@ import UserContext from "./UserContext.jsx";
 export default function Profile() {
   // State variable for holding user data
   const [currentUserData, setCurrentUserData] = useState(null);
-  
+
   // State variable indicating when the request is in progress.
   const [isDataLoadingActive, setIsDataLoadingActive] = useState(true);
 
@@ -76,11 +76,11 @@ export default function Profile() {
           <Grid item xs>
             <LinearProgress />
           </Grid>
-          ) : (        
+        ) : (
           <Grid item container>
             <ProfileCard />
           </Grid>
-          )}
+        )}
 
       </Grid>
     </UserContext.Provider>
