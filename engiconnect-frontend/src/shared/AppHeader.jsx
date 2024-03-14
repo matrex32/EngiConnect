@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Typography, Toolbar, Button, Grid, Tooltip, IconButton, Menu, MenuItem } from "@mui/material";
+import { AppBar, Typography, Toolbar, Button, Grid, Tooltip, IconButton, Menu, MenuItem, Divider } from "@mui/material";
 
 import EngiConnectAvatar from "./EngiConnectAvatar.jsx";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -105,6 +105,29 @@ function AppHeader({ showLogoutButton }) {
                                     onClose={handleCloseUserMenu}
                                 >
                                     <MenuItem onClick={handleCloseUserMenu} style={{ padding: 0 }}>
+                                        <Grid container direction="column">
+                                           
+                                        <Grid item>
+                                        <form>
+                                        <Button
+                                                onClick={() => window.location.href='/user-profile'}
+                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                Profile
+                                            </Button>
+                                        </form>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid item>
+                                            <form>
+                                        <Button 
+                                                onClick={() => window.location.href='/'}
+                                                style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                Settings
+                                            </Button>
+                                        </form>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid item>
                                         <form action="/logout" method="post">
                                             {/* Log out button */}
                                             <Button 
@@ -113,6 +136,8 @@ function AppHeader({ showLogoutButton }) {
                                                 Log out
                                             </Button>
                                         </form>
+                                        </Grid>
+                                        </Grid>
                                     </MenuItem>
                                 </Menu>
                             </Grid>
