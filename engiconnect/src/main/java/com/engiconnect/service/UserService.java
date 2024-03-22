@@ -354,7 +354,8 @@ public class UserService {
 		        Files.createDirectories(uploadPath);
 		    }
 
-		    String filename = userCv.getOriginalFilename();
+		    user.setCvFileName(userCv.getOriginalFilename());
+		    String filename = user.getId() + "_" + userCv.getOriginalFilename();
 		    Path filePath = uploadPath.resolve(filename);
 		    Files.copy(userCv.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
@@ -366,6 +367,7 @@ public class UserService {
 		    if (user.getUserCvPath() != null && !user.getUserCvPath().isEmpty()) {
 		        Path cvPath = Paths.get(fileStorageConfig.getCvUploadDir()).resolve(user.getUserCvPath());
 		        Files.deleteIfExists(cvPath); 
+		        user.setCvFileName(null);
 		    }
 		}
 

@@ -39,8 +39,10 @@ public class UserConverter {
 	        String baseUrl = "http://localhost:8080/api/users"; 
 	        String fullCvUrl = baseUrl + "/cv/" + user.getUserCvPath();
 	        userDto.setUserCvPath(fullCvUrl);
+	        userDto.setCvFileName(user.getCvFileName());
 	    } else {
 	        userDto.setUserCvPath(null);
+	        userDto.setCvFileName(null);
 	    }
 	    
 	    if (user.getAboutMe() != null && !user.getAboutMe().isEmpty()) {

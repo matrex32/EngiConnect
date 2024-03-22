@@ -62,5 +62,7 @@ public class UserDto {
 	private String yearOfStudy;
 	
 	private String userCvPath;
+	
+	private String cvFileName;
 
 }

@@ -61,7 +61,7 @@ export default function GeneralSection({ showMessage }) {
     useEffect(() => {
         const cvPath = currentUserData.userCvPath;
         if (cvPath) {
-            setCvFileName(cvPath.split('/').pop());
+            setCvFileName(currentUserData.cvFileName);
         }
     }, [currentUserData.userCvPath]);
 
@@ -239,7 +239,7 @@ export default function GeneralSection({ showMessage }) {
         const file = event.target.files[0]
         if (file) {
             setCvFile(file);
-            setCvFileName(file.name);
+            setCvFileName(currentUserData.cvFileName);
             uploadCv(file)
         }
     };
@@ -274,7 +274,7 @@ export default function GeneralSection({ showMessage }) {
                 <Grid item style={{ maxWidth: 'fit-content' }}>
                     <EngiConnectAvatar
                         name={currentUserData.name}
-                        size={"100px"}
+                        size={"140px"}
                         profileImagePath={currentUserData.profileImagePath}
 
                     />

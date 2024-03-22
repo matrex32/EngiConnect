@@ -18,7 +18,7 @@ function GeneralDetails() {
     // State variable indicating whether the edit submission is in progress.
     const [isLoading, setIsLoading] = useState(false);
 
-    const cvFileName = currentUserData.userCvPath ? currentUserData.userCvPath.split('/').pop() : '';
+    const cvFileName = currentUserData.cvFileName
 
 
 
@@ -29,7 +29,7 @@ function GeneralDetails() {
                 <Grid item style={{ maxWidth: 'fit-content' }}>
                     <EngiConnectAvatar
                         name={currentUserData.name}
-                        size={"120px"}
+                        size={"140px"}
                         profileImagePath={currentUserData.profileImagePath}
                         clickable = {false}
 
@@ -133,7 +133,7 @@ function GeneralDetails() {
                     {currentUserData.userCvPath && (
                     <Grid item>
                         <TextField
-                            label="CV"
+                            label="Resume"
                             variant="outlined"
                             value={cvFileName}
                             InputProps={{

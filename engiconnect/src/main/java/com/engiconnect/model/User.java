@@ -93,5 +93,8 @@ public class User {
 	
 	@Column(name = "cv")
 	private String userCvPath;
+	
+	@Column(name = "cv_file_name")
+	private String cvFileName;
 
 }
