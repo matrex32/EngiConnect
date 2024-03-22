@@ -50,18 +50,17 @@ export default function GeneralSection({ showMessage }) {
     const cvInputRef = useRef(null);
 
     useEffect(() => {
-        // Presupunând că există un câmp userCvPath în contextul de user și că acesta este actualizat corect
+
         const cvPath = currentUserData.userCvPath;
         if (cvPath) {
-            const cvName = cvPath.split('/').pop(); // Extrage numele fișierului din URL
+            const cvName = cvPath.split('/').pop(); 
             setCvFileName(cvName);
         }
-    }, [currentUserData.userCvPath]); // Dependență pentru reîncărcarea atunci când calea CV se schimbă
+    }, [currentUserData.userCvPath]); 
 
     useEffect(() => {
         const cvPath = currentUserData.userCvPath;
         if (cvPath) {
-            // Presupunem că cvPath este numele fișierului CV
             setCvFileName(cvPath.split('/').pop());
         }
     }, [currentUserData.userCvPath]);
