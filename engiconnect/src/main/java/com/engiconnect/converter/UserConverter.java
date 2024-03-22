@@ -34,6 +34,50 @@ public class UserConverter {
 	    } else {
 	        userDto.setProfileImagePath(null);
 	    }
+	    
+	    if (user.getUserCvPath() != null && !user.getUserCvPath().isEmpty()) {
+	        String baseUrl = "http://localhost:8080/api/users"; 
+	        String fullCvUrl = baseUrl + "/cv/" + user.getUserCvPath();
+	        userDto.setUserCvPath(fullCvUrl);
+	    } else {
+	        userDto.setUserCvPath(null);
+	    }
+	    
+	    if (user.getAboutMe() != null && !user.getAboutMe().isEmpty()) {
+	    	userDto.setAboutMe(user.getAboutMe());
+	    } else {
+	    	userDto.setAboutMe(null);
+	    }
+	    
+	    if (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty()) {
+	    	userDto.setPhoneNumber(user.getPhoneNumber());
+	    } else {
+	    	userDto.setPhoneNumber(null);
+	    }
+	    
+	    if (user.getUserCity() != null && !user.getUserCity().isEmpty()) {
+	    	userDto.setUserCity(user.getUserCity());
+	    } else {
+	    	userDto.setUserCity(null);
+	    }
+	    
+	    if (user.getUniversity() != null && !user.getUniversity().isEmpty()) {
+	    	userDto.setUniversity(user.getUniversity());
+	    } else {
+	    	userDto.setUniversity(null);
+	    }
+	    
+	    if (user.getUserFaculty() != null && !user.getUserFaculty().isEmpty()) {
+	    	userDto.setUserFaculty(user.getUserFaculty());
+	    } else {
+	    	userDto.setUserFaculty(null);
+	    }
+	    
+	    if (user.getYearOfStudy() != null && !user.getYearOfStudy().isEmpty()) {
+	    	userDto.setYearOfStudy(user.getYearOfStudy());
+	    } else {
+	    	userDto.setYearOfStudy(null);
+	    }
 		
 		return userDto;
 	}

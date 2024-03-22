@@ -48,5 +48,19 @@ public class UserDto {
 	private Timestamp deletionDate;
 	
 	private String profileImagePath;
+	
+	private String aboutMe;
+	
+	private String phoneNumber;
+	
+	private String userCity;
+	
+	private String university;
+	
+	private String userFaculty;
+	
+	private String yearOfStudy;
+	
+	private String userCvPath;
 
 }

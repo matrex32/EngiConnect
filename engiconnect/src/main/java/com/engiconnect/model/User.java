@@ -72,5 +72,26 @@ public class User {
 	
 	@Column(name = "profile_image_path")
 	private String profileImagePath;
+	
+	@Column(name = "about_me")
+	private String aboutMe;
+	
+	@Column(name = "phone_number")
+	private String phoneNumber;
+	
+	@Column(name = "user_city")
+	private String userCity;
+	
+	@Column(name = "user_university")
+	private String university;
+	
+	@Column(name = "user_faculty")
+	private String userFaculty;
+	
+	@Column(name = "year_of_study")
+	private String yearOfStudy;
+	
+	@Column(name = "cv")
+	private String userCvPath;
 
 }

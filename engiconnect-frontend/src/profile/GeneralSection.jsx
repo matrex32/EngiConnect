@@ -2,9 +2,9 @@ import React from "react";
 
 import EngiConnectAvatar from "../shared/EngiConnectAvatar.jsx";
 
-import { Grid, TextField, Button, LinearProgress, Typography, TextareaAutosize } from "@mui/material";
+import { Grid, TextField, Button, LinearProgress, Typography, Link } from "@mui/material";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 
 import UserContext from "./UserContext.jsx";
 
@@ -31,6 +31,40 @@ export default function GeneralSection({ showMessage }) {
     // State variable indicating whether the edit submission is in progress.
     const [isLoading, setIsLoading] = useState(false);
 
+    const [editedAboutMe, setEditedAboutMe] = useState(currentUserData.aboutMe ?? '');
+
+    const [editedPhoneNumber, setEditedPhoneNumber] = useState(currentUserData.phoneNumber ?? '');
+
+    const [editedCity, setEditedCity] = useState(currentUserData.userCity ?? '');
+
+    const [editedUniversity, setEditedUniversity] = useState(currentUserData.university ?? '');
+
+    const [editedFaculty, setEditedFaculty] = useState(currentUserData.userFaculty ?? '');
+
+    const [editedYearOfStudy, setEditedYearOfStudy] = useState(currentUserData.yearOfStudy ?? '');
+
+    const [cvFile, setCvFile] = useState(currentUserData.userCvPath ?? '');
+
+    const [cvFileName, setCvFileName] = useState("");
+
+    const cvInputRef = useRef(null);
+
+    useEffect(() => {
+        // Presupunând că există un câmp userCvPath în contextul de user și că acesta este actualizat corect
+        const cvPath = currentUserData.userCvPath;
+        if (cvPath) {
+            const cvName = cvPath.split('/').pop(); // Extrage numele fișierului din URL
+            setCvFileName(cvName);
+        }
+    }, [currentUserData.userCvPath]); // Dependență pentru reîncărcarea atunci când calea CV se schimbă
+
+    useEffect(() => {
+        const cvPath = currentUserData.userCvPath;
+        if (cvPath) {
+            // Presupunem că cvPath este numele fișierului CV
+            setCvFileName(cvPath.split('/').pop());
+        }
+    }, [currentUserData.userCvPath]);
 
     /**
      * Handle input change event for text field.
@@ -52,7 +86,12 @@ export default function GeneralSection({ showMessage }) {
      */
     const handleClickEditButton = () => {
         setIsEditActive(true);
-    };
+    }
+
+    const handleCvButtonClick = () => {
+        cvInputRef.current.click();
+    }
+
 
     /**
      * Cancels the edit mode and reverts any unsaved changes when the cancel edit button is clicked.
@@ -82,15 +121,25 @@ export default function GeneralSection({ showMessage }) {
     /**
      * Send an edit name request to the server.
      */
-    const sendEditNameRequest = () => {
+    const sendEditRequest = () => {
         setIsLoading(true);
+
+        const userGeneralProfileData = {
+            name: editedUserName,
+            aboutMe: editedAboutMe,
+            phoneNumber: editedPhoneNumber,
+            userCity: editedCity,
+            university: editedUniversity,
+            userFaculty: editedFaculty,
+            yearOfStudy: editedYearOfStudy
+        }
 
         return fetch('api/users/profile', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(editedUserName),
+            body: JSON.stringify(userGeneralProfileData),
         }).then((response) => {
             if (response.ok) {
                 setIsLoading(false);
@@ -116,16 +165,103 @@ export default function GeneralSection({ showMessage }) {
         });
     };
 
+    const uploadCv = (file) => {
+
+        const formData = new FormData();
+        formData.append('cv', file);
+
+        setIsLoading(true);
+
+        fetch('api/users/cv', {
+            method: 'PUT',
+            body: formData,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('An error occurred, please try again later');
+                }
+                return response.json();
+            })
+            .then(data => {
+                showMessage(true, 'Your resume has been successfully uploaded!');
+                updateCurrentUser(data);
+            })
+            .catch(error => {
+                showMessage(false, error.toString());
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
     /**
      * Initiates the save process if changes are valid when the save button is clicked.
      */
     const handleClickSaveButton = () => {
-        if (editedUserName === currentUserData.name) {
-            setIsEditActive(false);
-        } else if (validateEditedInputs()) {
-            sendEditNameRequest();
+        const isNameChanged = editedUserName !== currentUserData.name;
+        const isAboutMeChanged = editedAboutMe !== (currentUserData.aboutMe ?? '');
+        const isPhoneNumberChanged = editedPhoneNumber !== (currentUserData.phoneNumber ?? '');
+        const isCity = editedCity !== (currentUserData.usercity ?? '');
+        const isUniversity = editedUniversity !== (currentUserData.university ?? '');
+        const isFaculty = editedFaculty !== (currentUserData.userFaculty ?? '');
+        const isYearOfStudy = editedFaculty !== (currentUserData.yearOfStudy ?? '');
+
+        if (isNameChanged || isAboutMeChanged || isPhoneNumberChanged || isCity || isUniversity || isFaculty || isYearOfStudy && validateEditedInputs()) {
+            sendEditRequest();
         }
+        setIsEditActive(false);
     }
+
+    const handleAboutMeChange = (event) => {
+        setEditedAboutMe(event.target.value);
+    };
+
+    const handlePhoneNumber = (event) => {
+        setEditedPhoneNumber(event.target.value);
+    };
+
+    const handleCity = (event) => {
+        setEditedCity(event.target.value);
+    };
+
+    const handleUniversity = (event) => {
+        setEditedUniversity(event.target.value);
+    };
+
+    const handleFaculty = (event) => {
+        setEditedFaculty(event.target.value);
+    };
+
+    const handleYearOfStudy = (event) => {
+        setEditedYearOfStudy(event.target.value);
+    };
+
+    const handleUserCv = (event) => {
+        const file = event.target.files[0]
+        if (file) {
+            setCvFile(file);
+            setCvFileName(file.name);
+            uploadCv(file)
+        }
+    };
+
+    const handleDeleteCv = async () => {
+        const response = await fetch('api/users/delete-cv', {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            showMessage(true, 'Your resume has been successfully deleted!');
+            updateCurrentUser({ ...currentUserData, userCvPath: null });
+            setCvFileName("");
+            setCvFile(null);
+        } else {
+            showMessage(false, 'An error occurred, please try again later');
+        }
+    };
+
+
+
+
 
     return (
         <Grid item container direction='column' gap='20px' >
@@ -153,9 +289,11 @@ export default function GeneralSection({ showMessage }) {
                             id="about-me"
                             label="About me"
                             variant="outlined"
+                            value={editedAboutMe}
+                            onChange={handleAboutMeChange}
                             InputProps={{ readOnly: !isEditActive }}
                             fullWidth
-
+                            multiline
                         />
 
 
@@ -187,6 +325,120 @@ export default function GeneralSection({ showMessage }) {
                             fullWidth
                         />
                     </Grid>
+
+                    <Grid item>
+                        <TextField
+                            id="phone-number"
+                            label="Phone number"
+                            variant="outlined"
+                            value={editedPhoneNumber}
+                            onChange={handlePhoneNumber}
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextField
+                            id="city"
+                            label="City"
+                            variant="outlined"
+                            value={editedCity}
+                            onChange={handleCity}
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextField
+                            id="university"
+                            label="University"
+                            variant="outlined"
+                            value={editedUniversity}
+                            onChange={handleUniversity}
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextField
+                            id="faculty"
+                            label="Faculty"
+                            variant="outlined"
+                            value={editedFaculty}
+                            onChange={handleFaculty}
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextField
+                            id="yearOfStudy"
+                            label="Year of study"
+                            variant="outlined"
+                            value={editedYearOfStudy}
+                            onChange={handleYearOfStudy}
+                            InputProps={{ readOnly: !isEditActive }}
+                            fullWidth
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <input
+                            ref={cvInputRef}
+                            type="file"
+                            accept="application/pdf"
+                            onChange={handleUserCv}
+                            style={{ display: "none" }}
+                        />
+                        {!currentUserData.userCvPath && (
+                            <Button
+                                variant="contained"
+                                component="span"
+                                onClick={handleCvButtonClick}
+                            >
+                                Upload resume
+                            </Button>
+                        )}
+
+                        {cvFileName && (
+                            <TextField
+                                id="cvName"
+                                label="Your resume"
+                                variant="outlined"
+                                fullWidth
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                value={cvFileName}
+                                margin="normal"
+                            />
+                        )}
+
+                        {currentUserData.userCvPath && (
+                            <Grid container spacing={2} alignItems="center" justify="center">
+                                <Grid item>
+                                    <a href={currentUserData.userCvPath} target="_blank" rel="noopener noreferrer">
+                                        <Button variant="contained">View resume</Button>
+                                    </a>
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={handleDeleteCv}
+                                        style={{ backgroundColor: 'red', color: 'white' }} 
+                                    >
+                                        Delete resume
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Grid>
+
                 </Grid>
             </Grid>
 

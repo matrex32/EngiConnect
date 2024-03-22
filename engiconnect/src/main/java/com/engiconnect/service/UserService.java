@@ -24,7 +24,7 @@ import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
 import com.engiconnect.dto.ResetPasswordDto;
-import com.engiconnect.dto.UpdateUserNameDto;
+import com.engiconnect.dto.UpdateUserDto;
 import com.engiconnect.events.RegistrationEvent;
 import com.engiconnect.exception.InternalErrorCode;
 import com.engiconnect.exception.EngiConnectException;
@@ -141,9 +141,15 @@ public class UserService {
      * @param newName the new name to be set for the user.
      * @return the updated user entity.
      */
-	public User updateCurrentUserName( UpdateUserNameDto newName) {
+	public User updateCurrentUser( UpdateUserDto updatedUser) {
 		User currentUser = getCurrentUser();
-	    currentUser.setName(newName.getName());
+	    currentUser.setName(updatedUser.getName());
+	    currentUser.setAboutMe(updatedUser.getAboutMe());
+	    currentUser.setPhoneNumber(updatedUser.getPhoneNumber());
+	    currentUser.setUserCity(updatedUser.getUserCity());
+	    currentUser.setUniversity(updatedUser.getUniversity());
+	    currentUser.setUserFaculty(updatedUser.getUserFaculty());
+	    currentUser.setYearOfStudy(updatedUser.getYearOfStudy());
 	    userRepository.save(currentUser);
 	    return currentUser;
 	}
@@ -337,4 +343,30 @@ public class UserService {
 
 	        return Paths.get(fileStorageConfig.getUploadDir()).relativize(filePath).toString();
 	    }
+	 
+	 public String saveUserCv(MultipartFile userCv, User user) throws IOException {
+		 if (userCv.isEmpty()) {
+		        throw new IOException("Cannot save empty file");
+		    }
+
+		    Path uploadPath = Paths.get(fileStorageConfig.getCvUploadDir());
+		    if (!Files.exists(uploadPath)) {
+		        Files.createDirectories(uploadPath);
+		    }
+
+		    String filename = userCv.getOriginalFilename();
+		    Path filePath = uploadPath.resolve(filename);
+		    Files.copy(userCv.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+
+	        return Paths.get(fileStorageConfig.getCvUploadDir()).relativize(filePath).toString();
+	    }
+	 
+	 public void deleteUserCv(User user) throws IOException {
+		    if (user.getUserCvPath() != null && !user.getUserCvPath().isEmpty()) {
+		        Path cvPath = Paths.get(fileStorageConfig.getCvUploadDir()).resolve(user.getUserCvPath());
+		        Files.deleteIfExists(cvPath); 
+		    }
+		}
+
 }

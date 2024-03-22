@@ -1,7 +1,9 @@
 package com.engiconnect.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,13 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.net.MalformedURLException;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
+import org.springframework.http.HttpHeaders;
+
+import com.engiconnect.config.FileStorageConfig;
 import com.engiconnect.converter.UserConverter;
 import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
 import com.engiconnect.dto.ResetPasswordDto;
-import com.engiconnect.dto.UpdateUserNameDto;
+import com.engiconnect.dto.UpdateUserDto;
 import com.engiconnect.dto.UserDto;
 import com.engiconnect.exception.UserNotAuthenticatedException;
 import com.engiconnect.exception.EngiConnectException;
@@ -55,6 +67,9 @@ public class UserController {
 	@Autowired
 	private UserConverter userConverter;
 	
+	@Autowired
+	private FileStorageConfig fileStorageConfig;
+	
 	/**
      * Handles the POST request to register a new user.
      * 
@@ -83,7 +98,7 @@ public class UserController {
 			return userConverter.entityToDto(currentUser);
 
 		} catch (UserNotAuthenticatedException e) {
-			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null, null);
+			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null, null, null, null, null, null, null, null, null);
 		}
 	}
     
@@ -96,10 +111,10 @@ public class UserController {
      * @throws Exception if validation fails. 
      */
     @PutMapping("/profile")
-    public UserDto updateUserName(@RequestBody UpdateUserNameDto nameChange ) {
-    	validationService.validate(nameChange);
-    	User updatedUser = userService.updateCurrentUserName(nameChange);
-        return userConverter.entityToDto(updatedUser);
+    public UserDto updateUserName(@RequestBody UpdateUserDto updatedUser ) {
+    	validationService.validate(updatedUser.getName());
+    	User updatedCurrentUser = userService.updateCurrentUser(updatedUser);
+        return userConverter.entityToDto(updatedCurrentUser);
     }
 
     /**
@@ -245,4 +260,51 @@ public class UserController {
             throw new RuntimeException("Problem with file upload", e);
         }
     }
+    
+    @PutMapping("/cv")
+    public UserDto updateUserCv(@RequestParam("cv") MultipartFile userCv) {
+        User currentUser = userService.getCurrentUser();
+        try {
+            String userCvPath = userService.saveUserCv(userCv, currentUser);
+            currentUser.setUserCvPath(userCvPath);
+            User updatedUser = userService.updateUser(currentUser);
+            return userConverter.entityToDto(updatedUser);
+        } catch (IOException e) {
+            throw new RuntimeException("Problem with file upload", e);
+        }
+    }
+    
+    @GetMapping("/cv/{filename:.+}")
+    public ResponseEntity<Resource> serveOrDownloadCv(@PathVariable String filename) {
+        Path path = Paths.get(fileStorageConfig.getCvUploadDir() + "/" + filename); 
+        Resource resource;
+        try {
+            resource = new UrlResource(path.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                String contentDisposition = "inline; filename=\"" + resource.getFilename() + "\""; 
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @DeleteMapping("/delete-cv")
+    public UserDto deleteUserCv() {
+        User currentUser = userService.getCurrentUser();
+        try {
+            userService.deleteUserCv(currentUser); 
+            currentUser.setUserCvPath(null); 
+            User updatedUser = userService.updateUser(currentUser);
+            return userConverter.entityToDto(updatedUser);
+        } catch (IOException e) {
+            throw new RuntimeException("Problem with CV deletion", e);
+        }
+    }
+
 }

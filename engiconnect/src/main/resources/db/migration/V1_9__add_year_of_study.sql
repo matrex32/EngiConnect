@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN year_of_study VARCHAR(255);

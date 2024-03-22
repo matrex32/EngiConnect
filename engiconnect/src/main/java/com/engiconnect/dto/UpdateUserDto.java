@@ -14,11 +14,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserNameDto {
+public class UpdateUserDto {
 	
 	/**
 	 * The new name for the user
 	 */
 	@NotBlank
 	private String name;
+	
+	private String aboutMe;
+	
+	private String phoneNumber;
+	
+	private String userCity;
+	
+	private String university;
+	
+	private String userFaculty;
+	
+	private String yearOfStudy;
 }

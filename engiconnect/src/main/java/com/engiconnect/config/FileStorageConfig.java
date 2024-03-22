@@ -13,4 +13,7 @@ public class FileStorageConfig {
 
 	@Value("${file.upload-dir}")
     private String uploadDir;
+	
+	@Value("${file.cv-upload-dir}")
+	private String cvUploadDir;
 }
