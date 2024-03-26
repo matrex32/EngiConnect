@@ -2,6 +2,7 @@ package com.engiconnect.service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,9 +18,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.*;
 
 import com.engiconnect.config.EngiConnectPropertiesConfig;
 import com.engiconnect.config.FileStorageConfig;
+import com.engiconnect.converter.UserConverter;
 import com.engiconnect.dto.ChangePasswordDto;
 import com.engiconnect.dto.DeleteUserDto;
 import com.engiconnect.dto.EmailResetPasswordDto;
@@ -36,6 +39,7 @@ import com.engiconnect.repository.UserRepository;
 import com.engiconnect.type.TokenClaim;
 import com.engiconnect.utility.DateUtility;
 import com.engiconnect.events.ResetPasswordEvent;
+import com.engiconnect.dto.UserDto;
 
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
@@ -72,6 +76,9 @@ public class UserService {
 	
 	@Autowired
 	private FileStorageConfig fileStorageConfig;
+	
+	@Autowired
+	private UserConverter userConverter;
 	
 	/**
 	 * Register a new user in the system.
@@ -371,4 +378,8 @@ public class UserService {
 		    }
 		}
 
+	 public List<UserDto> searchUsersByName(String name) {
+	        List<User> users = userRepository.findByNameContainingIgnoreCase(name);
+	        return users.stream().map(user -> userConverter.entityToDto(user)).collect(Collectors.toList());
+	    }
 }

@@ -64,5 +64,7 @@ public class UserDto {
 	private String userCvPath;
 	
 	private String cvFileName;
+	
+	private String id;
 
 }

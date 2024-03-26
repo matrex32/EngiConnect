@@ -26,6 +26,7 @@ public class UserConverter {
 		userDto.setEmail(user.getEmail());
 		userDto.setStatus(user.getStatus());
 	    userDto.setDeletionDate(user.getDeletionDate());
+	    userDto.setId(user.getId().toString());
 	    
 	    if (user.getProfileImagePath() != null && !user.getProfileImagePath().isEmpty()) {
 	        String baseUrl = "http://localhost:8080"; 

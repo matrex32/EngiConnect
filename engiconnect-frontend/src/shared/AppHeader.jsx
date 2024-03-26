@@ -4,6 +4,7 @@ import { AppBar, Typography, Toolbar, Button, Grid, Tooltip, IconButton, Menu, M
 import EngiConnectAvatar from "./EngiConnectAvatar.jsx";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import UserContext from '../profile/UserContext.jsx';
+import SearchUser from "./SearchUser.jsx";
 
 import { useState, useContext } from 'react';
 /**
@@ -11,7 +12,7 @@ import { useState, useContext } from 'react';
 
  * @returns {JSX.Element} The JSX representation of the Header component.
  */
-function AppHeader({ showLogoutButton }) {
+function AppHeader({ showLogoutButton, showSearchUser}) {
     // A state variable to hold the DOM element that the user menu is anchored to.
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -29,6 +30,7 @@ function AppHeader({ showLogoutButton }) {
         setAnchorElUser(null);
     };
     console.log(showLogoutButton, currentUserData);
+    console.log(showSearchUser);
 
 
     return (
@@ -36,7 +38,7 @@ function AppHeader({ showLogoutButton }) {
         <AppBar position="static" style={{ backgroundColor: '#529CFF' }}>
             <Toolbar>
                 <Grid container justifyContent="space-between">
-                    <Grid item container wrap="nowrap" style={{ maxWidth: 'fit-content', alignItems: 'center' }}>
+                    <Grid item container xs={3} wrap="nowrap" style={{ maxWidth: 'fit-content', alignItems: 'center' }}>
                         {/* Logo */}
                         <Grid item>
                             <img
@@ -61,8 +63,14 @@ function AppHeader({ showLogoutButton }) {
                         </Grid>
                     </Grid>
 
+                    {currentUserData &&
+                    <Grid item xs={6} justifyContent="center" style={{maxWidth: 'fit-content', display: 'flex'}} alignItems="center"  >
+                        <SearchUser />
+                    </Grid>
+                    }
+
                     {showLogoutButton && currentUserData &&
-                        <Grid item container style={{ maxWidth: 'fit-content' }}>
+                        <Grid item xs={3} container style={{ maxWidth: 'fit-content' }}>
                             <Grid item>
                                 {/* Helper text */}
                                 <Tooltip title="Open menu">

@@ -19,7 +19,6 @@ function EngiConnectAvatar({ size, clickable = true}) {
   const [isSuccessSnackbar, setIsSuccessSnackbar] = useState(false);
 
     useEffect(() => {
-        // Această actualizare va fi declanșată ori de câte ori currentUserData se schimbă
         setProfileImagePath(currentUserData?.profileImagePath);
     }, [currentUserData]);
 

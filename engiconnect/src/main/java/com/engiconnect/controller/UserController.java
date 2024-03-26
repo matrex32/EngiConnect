@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.util.*;
 
 import org.springframework.http.HttpHeaders;
 
@@ -98,7 +99,7 @@ public class UserController {
 			return userConverter.entityToDto(currentUser);
 
 		} catch (UserNotAuthenticatedException e) {
-			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null, null, null, null, null, null, null, null, null, null);
+			return new UserDto("Anonymous User", "anonymousUser", null, UserStatus.ACTIVE.getStatus(), null, null, null, null, null, null, null, null, null, null, null);
 		}
 	}
     
@@ -305,6 +306,11 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException("Problem with CV deletion", e);
         }
+    }
+    
+    @GetMapping("/search")
+    public List<UserDto> searchUsers(@RequestParam String query) {
+        return userService.searchUsersByName(query);
     }
 
 }
