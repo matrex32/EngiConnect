@@ -1,24 +1,41 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import "../css/GlobalStyle.css";
 import "../css/ProfileStyle.css";
 
-import { Grid, TextField, Button, LinearProgress, Typography } from "@mui/material";
-import EngiConnectAvatar from "../shared/EngiConnectAvatar.jsx";
-import UserContext from "../profile/UserContext.jsx";
+import { Grid, TextField, Button, LinearProgress} from "@mui/material";
+import SearchUserAvatar from '../shared/SearchUserAvatar.jsx';
 
-function GeneralDetails() {
+function SearchUserGeneralDetails() {
 
-    // Using the useContext hook to obtain the current context value for UserContext, and storing it in the userContext variable.
-    const userContext = useContext(UserContext);
-
-    // Accessing the currentUserData property from the userContext object to get the data of the currently logged-in user.
-    const currentUserData = userContext.currentUserData;
-
-    // State variable indicating whether the edit submission is in progress.
+    const [searchedUserData, setSearchedUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const cvFileName = currentUserData.cvFileName
+    useEffect(() => {
+        const userDataString = localStorage.getItem('searchedUserData');
+        const userData = JSON.parse(userDataString);
+        if (userData) {
+            setSearchedUserData(userData);
+
+        } else {
+            setIsLoading(true); 
+        }
+    }, []);
+
+    if (isLoading || !searchedUserData) {
+        return (
+            <Grid item xs={12} style={{ padding: '20px' }}>
+                <LinearProgress />
+            </Grid>
+        );
+    }
+
+    const {
+        name, profileImagePath, aboutMe, email, phoneNumber, userCity, university, userFaculty, yearOfStudy, userCvPath
+    } = searchedUserData;
+    const cvFileName = userCvPath ? 'View Resume' : 'No resume uploaded';
+
+
 
 
 
@@ -27,24 +44,22 @@ function GeneralDetails() {
             <Grid item container gap='10px'>
                 {/* Display user avatar */}
                 <Grid item style={{ maxWidth: 'fit-content' }}>
-                    <EngiConnectAvatar
-                        name={currentUserData.name}
-                        size={"140px"}
-                        profileImagePath={currentUserData.profileImagePath}
-                        clickable = {false}
-
+                    <SearchUserAvatar
+                        name={searchedUserData.name}
+                        size="140px"
+                        profileImagePath={searchedUserData.profileImagePath}
                     />
                 </Grid>
 
                 {/* Display user info */}
                 <Grid item container style={{ flexGrow: 1, flexBasis: 0 }} direction='column' gap='15px'>
-                    
+
                     <Grid item>
                         <TextField
                             id="about-me"
                             label="About me"
                             variant="outlined"
-                            value={currentUserData.aboutMe}
+                            value={searchedUserData.aboutMe}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -59,7 +74,6 @@ function GeneralDetails() {
                                     color: 'black', 
                                 },
                             }}
-                            multiline
                         />
                     </Grid>
 
@@ -69,7 +83,7 @@ function GeneralDetails() {
                             id="name-info"
                             label="Name"
                             variant="outlined"
-                            value={currentUserData.name}
+                            value={searchedUserData.name}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -93,7 +107,7 @@ function GeneralDetails() {
                             id="email-info"
                             label="Email"
                             variant="outlined"
-                            value={currentUserData.email}
+                            value={searchedUserData.email}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -116,7 +130,7 @@ function GeneralDetails() {
                             id="phone-number"
                             label="Phone number"
                             variant="outlined"
-                            value={currentUserData.phoneNumber}
+                            value={searchedUserData.phoneNumber}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -139,7 +153,7 @@ function GeneralDetails() {
                             id="city"
                             label="City"
                             variant="outlined"
-                            value={currentUserData.userCity}
+                            value={searchedUserData.userCity}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -162,7 +176,7 @@ function GeneralDetails() {
                             id="university"
                             label="University"
                             variant="outlined"
-                            value={currentUserData.university}
+                            value={searchedUserData.university}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -185,7 +199,7 @@ function GeneralDetails() {
                             id="faculty"
                             label="Faculty"
                             variant="outlined"
-                            value={currentUserData.userFaculty}
+                            value={searchedUserData.userFaculty}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -208,7 +222,7 @@ function GeneralDetails() {
                             id="yearOfStudy"
                             label="Year of study"
                             variant="outlined"
-                            value={currentUserData.yearOfStudy}
+                            value={searchedUserData.yearOfStudy}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -226,37 +240,37 @@ function GeneralDetails() {
                         />
                     </Grid>
 
-                    {currentUserData.userCvPath && (
-                    <Grid item>
-                        <TextField
-                            label="Resume"
-                            variant="outlined"
-                            value={cvFileName}
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                            disabled={true}
-                            fullWidth
-                            sx={{
-                                '& .MuiInputBase-input.Mui-disabled': {
-                                    WebkitTextFillColor: 'black',
-                                    color: 'black',
-                                },
-                                '& .MuiInputLabel-root.Mui-disabled': { 
-                                    color: 'black', 
-                                },
-                            }}
-                        />
-                    </Grid>
-                )}
+                    {userCvPath && (
+                        <Grid item>
+                            <TextField
+                                label="Resume"
+                                variant="outlined"
+                                value={searchedUserData.cvFileName}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                disabled={true}
+                                fullWidth
+                                sx={{
+                                    '& .MuiInputBase-input.Mui-disabled': {
+                                        WebkitTextFillColor: 'black',
+                                        color: 'black',
+                                    },
+                                    '& .MuiInputLabel-root.Mui-disabled': { 
+                                        color: 'black', 
+                                    },
+                                }}
+                            />
+                        </Grid>
+                    )}
 
-                {currentUserData.userCvPath && (
-                    <Grid item>
-                        <Button variant="contained" onClick={() => window.open(currentUserData.userCvPath, '_blank')}>
-                            View resume
-                        </Button>
-                    </Grid>
-                )}
+                    {userCvPath && (
+                        <Grid item>
+                            <Button variant="contained" onClick={() => window.open(searchedUserData.userCvPath, '_blank')}>
+                                View resume
+                            </Button>
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
 
@@ -271,4 +285,4 @@ function GeneralDetails() {
     );
 }
 
-export default GeneralDetails
+export default SearchUserGeneralDetails

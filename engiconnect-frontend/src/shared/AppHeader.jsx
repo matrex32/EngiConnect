@@ -12,7 +12,7 @@ import { useState, useContext } from 'react';
 
  * @returns {JSX.Element} The JSX representation of the Header component.
  */
-function AppHeader({ showLogoutButton, showSearchUser}) {
+function AppHeader({ showLogoutButton}) {
     // A state variable to hold the DOM element that the user menu is anchored to.
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -29,9 +29,6 @@ function AppHeader({ showLogoutButton, showSearchUser}) {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-    console.log(showLogoutButton, currentUserData);
-    console.log(showSearchUser);
-
 
     return (
         /* App Bar for Header */

@@ -382,4 +382,9 @@ public class UserService {
 	        List<User> users = userRepository.findByNameContainingIgnoreCase(name);
 	        return users.stream().map(user -> userConverter.entityToDto(user)).collect(Collectors.toList());
 	    }
+	 
+	 public Optional<UserDto> findUserById(Integer userId) {
+		    return userRepository.findById(userId).map(userConverter::entityToDto);
+		}
+
 }

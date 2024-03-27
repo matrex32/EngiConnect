@@ -23,6 +23,7 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/profile").setViewName("profile");
 		registry.addViewController("/reset-password").setViewName("reset");
 		registry.addViewController("/user-profile").setViewName("user-profile");
+		registry.addViewController("/searched-user").setViewName("searched-user");
 	}
 	
     @Override

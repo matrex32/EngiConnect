@@ -96,7 +96,6 @@ function SearchUser() {
       fetch(`/api/users/search?query=${encodeURIComponent(query)}`)
         .then(response => response.json())
         .then(data => {
-          console.log("Date primite de la server:", data);
           setSearchResults(data)
           setShowResults(true)
         })
@@ -112,9 +111,22 @@ function SearchUser() {
   const handleUserClick = (userId) => {
     event.preventDefault()
     console.log('Aici sunt')
-    window.location.href = `/user-profile/${userId}`;
+    fetch(`/api/users/searched-user/${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
+        return response.json();
+      })
+      .then(data => {
+        localStorage.setItem('searchedUserData', JSON.stringify(data));
+        window.location.href = 'searched-user'
+      })
+      .catch(error => {
+        console.error('Error fetching user details:', error);
+      });
     setShowResults(false);
-};
+  };
 
   return (
     <Container>
@@ -123,7 +135,7 @@ function SearchUser() {
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
-          placeholder="Search an enginner"
+          placeholder="Search an engineer"
           inputProps={{ 'aria-label': 'search' }}
           value={searchQuery}
           onChange={handleSearch}
@@ -134,19 +146,19 @@ function SearchUser() {
       <SearchResultContainer showResults={showResults}>
         <List>
           {searchResults.map((user) => (
-            
-              <CustomListItem button key={user.id} onClick={() => handleUserClick(user.id)}>
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>
+
+            <CustomListItem button key={user.id} onClick={() => handleUserClick(user.id)}>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item>
                   <SearchUserAvatar size="35px" profileImagePath={user.profileImagePath} />
-                  </Grid>
-                  <Grid item>
-                  <ListItemText primary={user.name} />
-                  </Grid>
                 </Grid>
-              </CustomListItem>
+                <Grid item>
+                  <ListItemText primary={user.name} />
+                </Grid>
+              </Grid>
+            </CustomListItem>
           ))}
-            </List>
+        </List>
       </SearchResultContainer>
     </Container>
   );

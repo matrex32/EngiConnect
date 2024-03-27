@@ -312,5 +312,11 @@ public class UserController {
     public List<UserDto> searchUsers(@RequestParam String query) {
         return userService.searchUsersByName(query);
     }
+    
+    @GetMapping("/searched-user/{userId}")
+    public ResponseEntity<UserDto> getUserDetails(@PathVariable Integer userId) {
+        Optional<UserDto> userDtoOptional = userService.findUserById(userId);
+        return userDtoOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }
