@@ -24,11 +24,13 @@ public class MvcConfig implements WebMvcConfigurer {
 		registry.addViewController("/reset-password").setViewName("reset");
 		registry.addViewController("/user-profile").setViewName("user-profile");
 		registry.addViewController("/searched-user").setViewName("searched-user");
+		registry.addViewController("/news").setViewName("feed");
 	}
 	
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-        .addResourceLocations("file:///E:/EngiConnect/uploads/profile_picture/");
+        .addResourceLocations("file:///E:/EngiConnect/uploads/profile_picture/")
+        .addResourceLocations("file:///E:/EngiConnect/uploads/feed_picture/");
     }
 }

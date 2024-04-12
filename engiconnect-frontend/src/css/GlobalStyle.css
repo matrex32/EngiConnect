@@ -13,3 +13,13 @@ body {
 .MuiCard-root {
     border: 2px solid #ccc;
 }
+
+.custom-dialog {
+    width: 1800px;
+    max-height: 90vh;
+  }
+  
+  .wideTextFieldContainer {
+    width: 100%; 
+  }
+  

@@ -65,6 +65,6 @@ public class UserDto {
 	
 	private String cvFileName;
 	
-	private String id;
+	private Integer id;
 
 }

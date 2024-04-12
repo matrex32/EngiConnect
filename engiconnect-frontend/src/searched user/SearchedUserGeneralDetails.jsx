@@ -59,6 +59,7 @@ function SearchUserGeneralDetails() {
                             id="about-me"
                             label="About me"
                             variant="outlined"
+                            multiline
                             value={searchedUserData.aboutMe}
                             InputProps={{
                                 readOnly: true,

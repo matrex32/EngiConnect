@@ -113,6 +113,17 @@ function AppHeader({ showLogoutButton}) {
                                         <Grid container direction="column">
 
                                             <Grid item>
+                                            <Divider />
+                                            <Grid item>
+                                                <form>
+                                                    <Button
+                                                        onClick={() => window.location.href = '/news'}
+                                                        style={{ color: 'black', textTransform: 'none', minWidth: '130px' }}>
+                                                        News
+                                                    </Button>
+                                                </form>
+                                            </Grid>
+                                            <Divider />
                                                 <form>
                                                     <Button
                                                         onClick={() => window.location.href = '/user-profile'}

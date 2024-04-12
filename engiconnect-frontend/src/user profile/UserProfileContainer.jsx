@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect } from "react"
 
 import "../css/GlobalStyle.css"
 import AppHeader from "../shared/AppHeader.jsx"
