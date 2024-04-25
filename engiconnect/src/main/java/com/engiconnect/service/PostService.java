@@ -46,7 +46,7 @@ public class PostService {
 	        Files.createDirectories(uploadPath);
 	    }
 		
-		if(file.isEmpty()) {
+		if( file == null) {
 			fileName = null;
 		}else {
 			fileName = userId + "_" + file.getOriginalFilename();
