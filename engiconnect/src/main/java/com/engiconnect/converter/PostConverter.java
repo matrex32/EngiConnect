@@ -32,7 +32,7 @@ public class PostConverter {
         PostDto postDto = new PostDto();
         postDto.setTitle(post.getTitle());
         
-        postDto.setPostId(post.getPostId());
+        postDto.setPostId(post.getId());
         
         if (post.getImageUrl() == null || post.getImageUrl().trim().isEmpty()) {
             postDto.setImageUrl(null);

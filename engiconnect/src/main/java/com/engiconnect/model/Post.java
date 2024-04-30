@@ -25,13 +25,14 @@ public class Post {
      */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postId;
+	@Column(name = "post_id")
+    private Integer id;
 	
 	/**
      * The user who created the post.
      * This establishes a Many-to-One relationship between posts and users.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     

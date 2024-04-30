@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Container, Grid, Card, CardHeader, CardMedia, CardContent, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Container, Grid, Card, CardHeader, CardMedia, CardContent, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import "../css/GlobalStyle.css"
 import { Box } from '@mui/material';
@@ -24,21 +24,85 @@ function FeedPost() {
     const updateCurrentUser = userContext.updateCurrentUser;
 
     const [posts, setPosts] = useState([]);
+    const [likes, setLikes] = useState({});
+    const [comments, setComments] = useState({});
+    const [openComments, setOpenComments] = useState(false);
+    const [currentPostId, setCurrentPostId] = useState(null);
+    const [newCommentText, setNewCommentText] = useState('');
 
     useEffect(() => {
-        fetchPosts();
+        const initializeData = async () => {
+            const fetchedPosts = await fetchPosts();
+            if (fetchedPosts && fetchedPosts.length > 0) {
+                const [likesStatus, likeCounts] = await Promise.all([
+                    fetchLikes(fetchedPosts),
+                    fetchLikesCount(fetchedPosts)
+                ]);
+                applyLikesToPosts(fetchedPosts, likesStatus, likeCounts);
+            }
+        };
+    
+        initializeData();
     }, []);
 
-    const fetchPosts = async () => {
-
-        try {
-            const response = await fetch('/api/posts');
-            const data = await response.json();
-            setPosts(data);
-        } catch (error) {
-            console.error('Failed to fetch posts:', error);
+    useEffect(() => {
+        const savedLikes = localStorage.getItem('likes');
+        if (savedLikes) {
+            setLikes(JSON.parse(savedLikes));
         }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('likes', JSON.stringify(likes));
+    }, [likes]);
+
+    const applyLikesToPosts = (posts, likesStatus, likeCounts) => {
+        const newLikes = posts.reduce((acc, post, index) => {
+            acc[post.postId] = {
+                isLiked: likesStatus[index],
+                count: likeCounts[index]
+            };
+            return acc;
+        }, {});
+    
+        console.log("New likes state: ", newLikes);
+        setLikes({...newLikes});
     };
+        
+
+    const fetchPosts = async () => {
+        const response = await fetch('/api/posts');
+        const data = await response.json();
+        setPosts(data);
+        return data;
+    };
+
+    const fetchLikes = async (posts) => {
+        const likesStatus = await Promise.all(posts.map(post => {
+            return fetch(`/api/likes/check?userId=${currentUserData.id}&postId=${post.postId}`)
+                .then(res => res.json())
+                .catch(err => {
+                    console.error('Error fetching like status for post:', post.postId, err);
+                    return false; 
+                });
+        }));
+        return likesStatus;
+    };
+
+    const fetchLikesCount = async (posts) => {
+        const counts = await Promise.all(posts.map(post => {
+            return fetch(`/api/likes/count?postId=${post.postId}`)
+                .then(res => res.json())
+                .then(count => {
+                    return count || 0; 
+                })
+                .catch(err => {
+                    return 0; 
+                });
+        }));
+        return counts;
+    };
+    
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -67,7 +131,7 @@ function FeedPost() {
             setImage(selectedImage);
         }
     };
-    
+
 
     const handleSubmit = async () => {
         const formData = new FormData();
@@ -95,6 +159,103 @@ function FeedPost() {
         }
     };
 
+    const handleAddLike = async (postId) => {
+        if (!currentUserData || !currentUserData.id || !postId) {
+            console.error('User ID or Post ID is undefined:', currentUserData, postId);
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/likes/add-like`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUserData.id, postId: postId })
+            });
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Failed to add like: ${text}`);
+            }
+            const updatedLikeStatus = await response.json();
+            console.log('Updated like status:', updatedLikeStatus);
+            setLikes(prevLikes => ({
+                ...prevLikes,
+                [postId]: {
+                    count: updatedLikeStatus.totalLikes,
+                    isLiked: updatedLikeStatus.likedByUser
+                }
+            }));
+        } catch (error) {
+            console.error('Failed to add like:', error.message);
+        }
+        fetchPosts().then(fetchedPosts => {
+            fetchLikes(fetchedPosts);
+            fetchLikesCount(fetchedPosts);
+        });
+    };
+    
+    const handleRemoveLike = async (postId) => {
+        if (!currentUserData || !currentUserData.id || !postId) {
+            console.error('User ID or Post ID is undefined:', currentUserData, postId);
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/likes/delete-like?userId=${currentUserData.id}&postId=${postId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (!response.ok) {
+                throw new Error('Something went wrong with removing like');
+            }
+            const updatedLikeStatus = await response.json();
+            console.log('Updated like status:', updatedLikeStatus);
+            setLikes(prevLikes => ({
+                ...prevLikes,
+                [postId]: {
+                    count: updatedLikeStatus.totalLikes,
+                    isLiked: updatedLikeStatus.likedByUser
+                }
+            }));
+        } catch (error) {
+            console.error('Failed to remove like:', error);
+        }
+    };
+    
+
+
+    const handleOpenComments = async (postId) => {
+        try {
+            const response = await fetch(`/api/comments?postId=${postId}`);
+            const data = await response.json();
+            setComments({ ...comments, [postId]: data });
+
+            setCurrentPostId(postId);
+            setOpenComments(true);
+        } catch (error) {
+            console.error('Failed to fetch comments:', error);
+        }
+    };
+
+    const handleAddComment = async (commentText) => {
+        try {
+            const response = await fetch('/api/comments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `userId=${currentUserData.id}&postId=${currentPostId}&commentText=${commentText}`
+            });
+            if (response.ok) {
+                const newComment = await response.json();
+                setComments(prev => ({ ...prev, [currentPostId]: [...prev[currentPostId], newComment] }));
+                setNewCommentText('');
+            } else {
+                throw new Error('Failed to add comment');
+            }
+        } catch (error) {
+            console.error('Failed to submit comment:', error);
+        }
+    };
 
     return (
 
@@ -139,7 +300,22 @@ function FeedPost() {
                                     {post.imageUrl && (
                                         <CardMedia component="img" height="400" image={post.imageUrl} alt={post.title} />
                                     )}
-                                    <CardActions><Button size="small">See more</Button></CardActions>
+                                    <CardActions>
+                                        <Button
+                                            size="small"
+                                            onClick={() => likes[post.postId]?.isLiked ? handleRemoveLike(post.postId) : handleAddLike(post.postId)}
+                                            style={{
+                                                backgroundColor: likes[post.postId]?.isLiked ? '#1976d2' : 'transparent',
+                                                color: likes[post.postId]?.isLiked ? 'white' : 'black'
+                                            }}
+                                        >
+                                            Like
+                                        </Button>
+                                        <Button size="small" onClick={() => handleOpenComments(post.postId)}>Comment</Button>
+                                        <Typography variant="body2">
+                                            {likes[post.postId]?.count || 0} likes
+                                        </Typography>
+                                    </CardActions>
                                 </Card>
                             </Grid>
                         ))}
@@ -172,6 +348,28 @@ function FeedPost() {
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button onClick={handleSubmit}>Publish</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openComments} onClose={() => setOpenComments(false)}>
+                <DialogTitle>Comments</DialogTitle>
+                <DialogContent>
+                    {comments[currentPostId] && comments[currentPostId].map((comment, index) => (
+                        <Box key={index}>
+                            <Typography>{comment.user.name}: {comment.commentText}</Typography>
+                        </Box>
+                    ))}
+                    <TextField
+                        label="Add a comment"
+                        variant="outlined"
+                        fullWidth
+                        value={newCommentText}
+                        onChange={(e) => setNewCommentText(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => handleAddComment(newCommentText)}>Add Comment</Button>
+                    <Button onClick={() => setOpenComments(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
         </Container>
