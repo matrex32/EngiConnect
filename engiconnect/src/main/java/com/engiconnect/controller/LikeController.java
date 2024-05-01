@@ -20,7 +20,6 @@ public class LikeController {
 
     @PostMapping("/add-like")
     public ResponseEntity<?> addLike(@RequestBody LikeDto likeDto) {
-    	System.out.println("ADD!!!");
         try {
             LikeDto likeResponse = likeService.addLike(likeDto.getUserId(), likeDto.getPostId());
             return ResponseEntity.ok(likeResponse);
@@ -31,7 +30,6 @@ public class LikeController {
 
     @DeleteMapping("/delete-like")
     public ResponseEntity<?> removeLike(@RequestParam("userId") Integer userId, @RequestParam("postId") Integer postId) {
-    	System.out.println("DELETE!!!");
         try {
             LikeDto likeResponse = likeService.removeLike(userId, postId);
             return ResponseEntity.ok(likeResponse);
@@ -43,7 +41,6 @@ public class LikeController {
     
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkLike(@RequestParam("userId") Integer userId, @RequestParam("postId") Integer postId) {
-    	System.out.println("CHECK!!!");
         boolean exists = likeRepository.existsByPostIdAndUserId(postId, userId);
         return ResponseEntity.ok(exists);
     }

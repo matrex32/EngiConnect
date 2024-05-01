@@ -16,18 +16,21 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping
-    public ResponseEntity<?> addComment(@RequestParam("userId") Integer userId, @RequestParam("postId") Integer postId, @RequestParam("commentText") String commentText) {
+    @PostMapping("/add-comment")
+    public ResponseEntity<?> addComment(@RequestBody CommentDto commentDto) {
+    	System.out.println("ADD COMMENT!!!");
         try {
-            CommentDto comment = commentService.addComment(userId, postId, commentText);
+            CommentDto comment = commentService.addComment(commentDto.getUserId(), commentDto.getPostId(), commentDto.getCommentText());
             return ResponseEntity.status(HttpStatus.CREATED).body(comment);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @GetMapping
+
+    @GetMapping("/get-comment")
     public List<CommentDto> getCommentsByPostId(@RequestParam("postId") Integer postId) {
+    	System.out.println("GET COMMENT!!!");
         return commentService.getCommentsByPostId(postId);
     }
 }

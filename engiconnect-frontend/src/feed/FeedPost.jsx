@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Container, Grid, Card, CardHeader, CardMedia, CardContent, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
+import { Paper, Container, Grid, Card, CardHeader, CardMedia, CardContent, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import "../css/GlobalStyle.css"
 import { Box } from '@mui/material';
@@ -41,7 +41,7 @@ function FeedPost() {
                 applyLikesToPosts(fetchedPosts, likesStatus, likeCounts);
             }
         };
-    
+
         initializeData();
     }, []);
 
@@ -64,11 +64,11 @@ function FeedPost() {
             };
             return acc;
         }, {});
-    
+
         console.log("New likes state: ", newLikes);
-        setLikes({...newLikes});
+        setLikes({ ...newLikes });
     };
-        
+
 
     const fetchPosts = async () => {
         const response = await fetch('/api/posts');
@@ -83,7 +83,7 @@ function FeedPost() {
                 .then(res => res.json())
                 .catch(err => {
                     console.error('Error fetching like status for post:', post.postId, err);
-                    return false; 
+                    return false;
                 });
         }));
         return likesStatus;
@@ -94,15 +94,15 @@ function FeedPost() {
             return fetch(`/api/likes/count?postId=${post.postId}`)
                 .then(res => res.json())
                 .then(count => {
-                    return count || 0; 
+                    return count || 0;
                 })
                 .catch(err => {
-                    return 0; 
+                    return 0;
                 });
         }));
         return counts;
     };
-    
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -164,7 +164,7 @@ function FeedPost() {
             console.error('User ID or Post ID is undefined:', currentUserData, postId);
             return;
         }
-    
+
         try {
             const response = await fetch(`/api/likes/add-like`, {
                 method: 'POST',
@@ -192,13 +192,13 @@ function FeedPost() {
             fetchLikesCount(fetchedPosts);
         });
     };
-    
+
     const handleRemoveLike = async (postId) => {
         if (!currentUserData || !currentUserData.id || !postId) {
             console.error('User ID or Post ID is undefined:', currentUserData, postId);
             return;
         }
-    
+
         try {
             const response = await fetch(`/api/likes/delete-like?userId=${currentUserData.id}&postId=${postId}`, {
                 method: 'DELETE',
@@ -220,15 +220,13 @@ function FeedPost() {
             console.error('Failed to remove like:', error);
         }
     };
-    
-
 
     const handleOpenComments = async (postId) => {
         try {
-            const response = await fetch(`/api/comments?postId=${postId}`);
+            const response = await fetch(`/api/comments/get-comment?postId=${postId}`);
             const data = await response.json();
+            console.log("Comments data received:", data);
             setComments({ ...comments, [postId]: data });
-
             setCurrentPostId(postId);
             setOpenComments(true);
         } catch (error) {
@@ -236,26 +234,39 @@ function FeedPost() {
         }
     };
 
+
     const handleAddComment = async (commentText) => {
+        if (!commentText.trim()) return;
+
+        const commentData = {
+            userId: currentUserData.id,
+            postId: currentPostId,
+            commentText: commentText.trim(),
+        };
+
         try {
-            const response = await fetch('/api/comments', {
+            const response = await fetch('/api/comments/add-comment', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `userId=${currentUserData.id}&postId=${currentPostId}&commentText=${commentText}`
+                body: JSON.stringify(commentData)
             });
-            if (response.ok) {
-                const newComment = await response.json();
-                setComments(prev => ({ ...prev, [currentPostId]: [...prev[currentPostId], newComment] }));
-                setNewCommentText('');
-            } else {
-                throw new Error('Failed to add comment');
-            }
+            if (!response.ok) throw new Error('Failed to add comment');
+
+            const newComment = await response.json();
+            setComments(prev => ({
+                ...prev,
+                [currentPostId]: [...(prev[currentPostId] || []), newComment]
+            }));
+            setNewCommentText('');
+            setOpenComments(false);
         } catch (error) {
             console.error('Failed to submit comment:', error);
         }
     };
+
+
 
     return (
 
@@ -306,16 +317,50 @@ function FeedPost() {
                                             onClick={() => likes[post.postId]?.isLiked ? handleRemoveLike(post.postId) : handleAddLike(post.postId)}
                                             style={{
                                                 backgroundColor: likes[post.postId]?.isLiked ? '#1976d2' : 'transparent',
-                                                color: likes[post.postId]?.isLiked ? 'white' : 'black'
+                                                color: likes[post.postId]?.isLiked ? 'white' : 'black',
+                                                border: '1px solid #1976d2'
                                             }}
                                         >
-                                            Like
+                                            Like ({likes[post.postId]?.count || 0})
                                         </Button>
-                                        <Button size="small" onClick={() => handleOpenComments(post.postId)}>Comment</Button>
-                                        <Typography variant="body2">
-                                            {likes[post.postId]?.count || 0} likes
-                                        </Typography>
+                                        <Button
+                                            size="small"
+                                            onClick={() => handleOpenComments(post.postId)}
+                                            style={{
+                                                border: '1px solid #1976d2',
+                                                color: 'black',
+                                                backgroundColor: 'transparent'
+                                            }}
+                                        >
+                                            Comment
+                                        </Button>
                                     </CardActions>
+                                    {comments[post.postId] && (
+                                        <Box sx={{ p: 2, borderTop: '1px solid #ccc' }}>
+                                            {comments[post.postId].map((comment, idx) => (
+                                                <Paper
+                                                    key={idx}
+                                                    variant="outlined"
+                                                    sx={{ p: 2, mb: 1, borderColor: '#e0e0e0', display: 'flex', flexDirection: 'column' }}
+                                                >
+                                                    <Grid container wrap="nowrap" spacing={2}>
+                                                        <Grid item>
+                                                            <SearchUserAvatar size={30} profileImagePath={comment.userDto ? comment.userDto.profileImagePath : null} />
+                                                        </Grid>
+                                                        <Grid item xs zeroMinWidth>
+                                                            <Typography variant="subtitle2" noWrap>
+                                                                {comment.userDto.name}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Typography variant="body2" sx={{ mt: 1 }}>
+                                                        {comment.commentText}
+                                                    </Typography>
+                                                </Paper>
+                                            ))}
+                                        </Box>
+                                    )}
+
                                 </Card>
                             </Grid>
                         ))}
@@ -352,26 +397,26 @@ function FeedPost() {
             </Dialog>
 
             <Dialog open={openComments} onClose={() => setOpenComments(false)}>
-                <DialogTitle>Comments</DialogTitle>
+                <DialogTitle>Add a Comment</DialogTitle>
                 <DialogContent>
-                    {comments[currentPostId] && comments[currentPostId].map((comment, index) => (
-                        <Box key={index}>
-                            <Typography>{comment.user.name}: {comment.commentText}</Typography>
-                        </Box>
-                    ))}
                     <TextField
-                        label="Add a comment"
-                        variant="outlined"
+                        autoFocus
+                        margin="dense"
+                        id="comment"
+                        label="Comment"
+                        type="text"
                         fullWidth
                         value={newCommentText}
                         onChange={(e) => setNewCommentText(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={() => setOpenComments(false)}>Cancel</Button>
                     <Button onClick={() => handleAddComment(newCommentText)}>Add Comment</Button>
-                    <Button onClick={() => setOpenComments(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
+
+
         </Container>
 
 
