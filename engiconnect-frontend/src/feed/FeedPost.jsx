@@ -34,16 +34,19 @@ function FeedPost() {
         const initializeData = async () => {
             const fetchedPosts = await fetchPosts();
             if (fetchedPosts && fetchedPosts.length > 0) {
-                const [likesStatus, likeCounts] = await Promise.all([
+                const [likesStatus, likeCounts, fetchedComments] = await Promise.all([
                     fetchLikes(fetchedPosts),
-                    fetchLikesCount(fetchedPosts)
+                    fetchLikesCount(fetchedPosts),
+                    fetchCommentsForPosts(fetchedPosts) 
                 ]);
                 applyLikesToPosts(fetchedPosts, likesStatus, likeCounts);
+                setComments(fetchedComments);  
             }
         };
-
+    
         initializeData();
     }, []);
+    
 
     useEffect(() => {
         const savedLikes = localStorage.getItem('likes');
@@ -221,18 +224,26 @@ function FeedPost() {
         }
     };
 
-    const handleOpenComments = async (postId) => {
-        try {
-            const response = await fetch(`/api/comments/get-comment?postId=${postId}`);
-            const data = await response.json();
-            console.log("Comments data received:", data);
-            setComments({ ...comments, [postId]: data });
-            setCurrentPostId(postId);
-            setOpenComments(true);
-        } catch (error) {
-            console.error('Failed to fetch comments:', error);
-        }
+    const handleOpenComments = (postId) => {
+        setCurrentPostId(postId)
+        setOpenComments(true)
     };
+
+    const fetchCommentsForPosts = async (posts) => {
+        const commentsByPost = {};
+        for (let post of posts) {
+            const response = await fetch(`/api/comments/get-comment?postId=${post.postId}`);
+            if (!response.ok) {
+                console.error(`Failed to fetch comments for post ${post.postId}`);
+                commentsByPost[post.postId] = [];
+                continue;
+            }
+            const data = await response.json();
+            commentsByPost[post.postId] = data;
+        }
+        return commentsByPost;
+    };
+    
 
 
     const handleAddComment = async (commentText) => {
