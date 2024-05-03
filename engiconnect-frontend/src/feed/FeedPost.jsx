@@ -5,6 +5,7 @@ import "../css/GlobalStyle.css"
 import { Box } from '@mui/material';
 import UserContext from "../profile/UserContext.jsx";
 import SearchUserAvatar from '../shared/SearchUserAvatar.jsx';
+import '../css/BackgroundCard.css'
 
 
 function FeedPost() {
@@ -14,6 +15,8 @@ function FeedPost() {
     const [selectedFile, setSelectedFile] = useState(null)
     const [title, setTitle] = useState('')
     const [summary, setSummary] = useState('')
+    const [commentsVisibility, setCommentsVisibility] = useState({})
+
     // Using the useContext hook to obtain the current context value for UserContext, and storing it in the userContext variable.
     const userContext = useContext(UserContext);
 
@@ -37,16 +40,17 @@ function FeedPost() {
                 const [likesStatus, likeCounts, fetchedComments] = await Promise.all([
                     fetchLikes(fetchedPosts),
                     fetchLikesCount(fetchedPosts),
-                    fetchCommentsForPosts(fetchedPosts) 
+                    fetchCommentsForPosts(fetchedPosts)
+
                 ]);
                 applyLikesToPosts(fetchedPosts, likesStatus, likeCounts);
-                setComments(fetchedComments);  
+                setComments(fetchedComments);
             }
         };
-    
+
         initializeData();
     }, []);
-    
+
 
     useEffect(() => {
         const savedLikes = localStorage.getItem('likes');
@@ -63,12 +67,11 @@ function FeedPost() {
         const newLikes = posts.reduce((acc, post, index) => {
             acc[post.postId] = {
                 isLiked: likesStatus[index],
-                count: likeCounts[index]
+                count: likeCounts[index],
             };
             return acc;
         }, {});
 
-        console.log("New likes state: ", newLikes);
         setLikes({ ...newLikes });
     };
 
@@ -85,7 +88,6 @@ function FeedPost() {
             return fetch(`/api/likes/check?userId=${currentUserData.id}&postId=${post.postId}`)
                 .then(res => res.json())
                 .catch(err => {
-                    console.error('Error fetching like status for post:', post.postId, err);
                     return false;
                 });
         }));
@@ -105,7 +107,6 @@ function FeedPost() {
         }));
         return counts;
     };
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -179,7 +180,7 @@ function FeedPost() {
                 throw new Error(`Failed to add like: ${text}`);
             }
             const updatedLikeStatus = await response.json();
-            console.log('Updated like status:', updatedLikeStatus);
+
             setLikes(prevLikes => ({
                 ...prevLikes,
                 [postId]: {
@@ -243,7 +244,7 @@ function FeedPost() {
         }
         return commentsByPost;
     };
-    
+
 
 
     const handleAddComment = async (commentText) => {
@@ -277,6 +278,12 @@ function FeedPost() {
         }
     };
 
+    const toggleCommentsVisibility = (postId) => {
+        setCommentsVisibility(prev => ({
+            ...prev,
+            [postId]: !prev[postId]
+        }));
+    };
 
 
     return (
@@ -287,7 +294,22 @@ function FeedPost() {
 
             </Grid>
 
-            <Box justifyContent="center" alignItems="center" sx={{ marginTop: 2, border: '2px solid #ccc', borderRadius: '4px', padding: 2, maxHeight: '100vh', overflow: 'auto', flexGrow: 1 }}>
+            <Box justifyContent="center" alignItems="center" className="card-background" sx={{
+                marginTop: 2,
+                border: '2px solid #ccc',
+                borderRadius: '4px',
+                padding: 2,
+                maxHeight: '100vh',
+                overflowY: 'auto',
+                flexGrow: 1,
+                '&::-webkit-scrollbar': {
+                    display: 'none'
+                },
+                msOverflowStyle: 'none',
+                scrollbarWidth: 'none'
+            }}
+
+            >
                 <InfiniteScroll dataLength={posts.length}>
                     <Grid container spacing={5} direction='column' justifyContent="center" alignItems="center">
                         {posts.map((post, index) => (
@@ -322,6 +344,9 @@ function FeedPost() {
                                     {post.imageUrl && (
                                         <CardMedia component="img" height="400" image={post.imageUrl} alt={post.title} />
                                     )}
+
+                                    <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+
                                     <CardActions>
                                         <Button
                                             size="small"
@@ -339,15 +364,28 @@ function FeedPost() {
                                             onClick={() => handleOpenComments(post.postId)}
                                             style={{
                                                 border: '1px solid #1976d2',
-                                                color: 'black',
-                                                backgroundColor: 'transparent'
+                                                color: 'white',
+                                                backgroundColor: '#1976d2'
                                             }}
                                         >
                                             Comment
                                         </Button>
+                                        {comments[post.postId] && comments[post.postId].length > 0 && (
+                                            <Button
+                                                size="small"
+                                                onClick={() => toggleCommentsVisibility(post.postId)}
+                                                style={{
+                                                    border: '1px solid #1565c0',
+                                                    color: commentsVisibility[post.postId] ? 'black' : 'white',
+                                                    backgroundColor: commentsVisibility[post.postId] ? '#e0e0e0' : '#1976d2'
+                                                }}
+                                            >
+                                                {commentsVisibility[post.postId] ? 'Hide Comments' : `Show Comments (${comments[post.postId].length})`}
+                                            </Button>
+                                        )}
                                     </CardActions>
-                                    {comments[post.postId] && (
-                                        <Box sx={{ p: 2, borderTop: '1px solid #ccc' }}>
+                                    {commentsVisibility[post.postId] && comments[post.postId] && (
+                                        <Box className="card-background" sx={{ p: 2, borderTop: '1px solid #ccc' }}>
                                             {comments[post.postId].map((comment, idx) => (
                                                 <Paper
                                                     key={idx}
@@ -364,9 +402,32 @@ function FeedPost() {
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
-                                                    <Typography variant="body2" sx={{ mt: 1 }}>
-                                                        {comment.commentText}
-                                                    </Typography>
+
+                                                    <Grid container sx={{ width: '100%' }}>
+
+                                                        <TextField
+                                                            autoFocus
+                                                            margin="dense"
+                                                            id='text-comment'
+                                                            type='text'
+                                                            InputProps={{
+                                                                readOnly: true,
+                                                            }}
+                                                            disabled={true}
+                                                            fullWidth
+                                                            multiline
+                                                            value={comment.commentText}
+                                                            sx={{
+                                                                '& .MuiInputBase-input.Mui-disabled': {
+                                                                    WebkitTextFillColor: 'black',
+                                                                    color: 'black',
+                                                                },
+                                                                '& .MuiInputLabel-root.Mui-disabled': {
+                                                                    color: 'black',
+                                                                },
+                                                            }}
+                                                        />
+                                                    </Grid>
                                                 </Paper>
                                             ))}
                                         </Box>
@@ -390,10 +451,10 @@ function FeedPost() {
                 <DialogContent>
                     <Grid container justifyContent="center" alignItems="center" spacing={2} direction='column' gap='15px'>
                         <Grid item>
-                            <TextField autoFocus margin="dense" id="title" label="Titlu Postare" type="text" fullWidth onChange={handleTitleChange} variant="standard" />
+                            <TextField autoFocus margin="dense" id="title" label="Title" type="text" fullWidth onChange={handleTitleChange} variant="standard" />
                         </Grid>
                         <Grid item>
-                            <TextField id="summary" label="Sumar Postare" type="text" fullWidth onChange={handleSummaryChange} variant="outlined" multiline />
+                            <TextField id="summary" label="Post summary" type="text" fullWidth onChange={handleSummaryChange} variant="outlined" multiline />
                         </Grid>
                         <Grid item>
                             <Button variant="contained" component="label">Upload Image<input type="file" hidden onChange={handleImageChange} /></Button>
@@ -402,12 +463,26 @@ function FeedPost() {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Publish</Button>
+                    <Button onClick={handleClose} variant="outlined" style={{ borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSubmit} variant="outlined" style={{ borderColor: '#00CC00', color: 'white', backgroundColor: '#00CC00' }}>
+                        Publish
+                    </Button>
                 </DialogActions>
+
             </Dialog>
 
-            <Dialog open={openComments} onClose={() => setOpenComments(false)}>
+            <Dialog
+                open={openComments}
+                onClose={() => setOpenComments(false)}
+                PaperProps={{
+                    style: {
+                        width: '80%',
+                        maxHeight: '70vh'
+                    }
+                }}
+            >
                 <DialogTitle>Add a Comment</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -416,14 +491,20 @@ function FeedPost() {
                         id="comment"
                         label="Comment"
                         type="text"
+                        multiline
                         fullWidth
                         value={newCommentText}
                         onChange={(e) => setNewCommentText(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenComments(false)}>Cancel</Button>
-                    <Button onClick={() => handleAddComment(newCommentText)}>Add Comment</Button>
+                    <Button onClick={() => setOpenComments(false)} variant='outlined' style={{ borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}>
+                        Cancel
+                    </Button>
+
+                    <Button onClick={() => handleAddComment(newCommentText)} variant='outlined' style={{ borderColor: '#00CC00', color: 'white', backgroundColor: '#00CC00' }}>
+                        Add Comment
+                    </Button>
                 </DialogActions>
             </Dialog>
 

@@ -2,6 +2,7 @@ package com.engiconnect.controller;
 
 import com.engiconnect.dto.CommentDto;
 import com.engiconnect.service.CommentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,6 @@ public class CommentController {
 
     @PostMapping("/add-comment")
     public ResponseEntity<?> addComment(@RequestBody CommentDto commentDto) {
-    	System.out.println("ADD COMMENT!!!");
         try {
             CommentDto comment = commentService.addComment(commentDto.getUserId(), commentDto.getPostId(), commentDto.getCommentText());
             return ResponseEntity.status(HttpStatus.CREATED).body(comment);
@@ -30,7 +30,6 @@ public class CommentController {
 
     @GetMapping("/get-comment")
     public List<CommentDto> getCommentsByPostId(@RequestParam("postId") Integer postId) {
-    	System.out.println("GET COMMENT!!!");
         return commentService.getCommentsByPostId(postId);
     }
 }
