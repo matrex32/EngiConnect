@@ -4,9 +4,9 @@ import "../css/GlobalStyle.css";
 import AppHeader from "../shared/AppHeader.jsx";
 import { Grid, LinearProgress } from "@mui/material";
 import UserContext from "../profile/UserContext.jsx";
-import FeedPost from "./FeedPost.jsx";
+import Job from "./Job.jsx";
 
-export default function FeedContainer() {
+export default function JobContainer() {
     const [currentUserData, setCurrentUserData] = useState(null);
     const [isDataLoadingActive, setIsDataLoadingActive] = useState(true);
     const [currentPosts, setCurrentPosts] = useState([]);
@@ -71,7 +71,7 @@ export default function FeedContainer() {
                     </Grid>
                 ) : (
                     <Grid item container>
-                        <FeedPost posts={currentPosts} />
+                        <Job posts={currentPosts} />
                     </Grid>
                 )}
             </Grid>

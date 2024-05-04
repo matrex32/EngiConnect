@@ -8,7 +8,7 @@ import SearchUserAvatar from '../shared/SearchUserAvatar.jsx';
 import '../css/BackgroundCard.css'
 
 
-function FeedPost() {
+function Job() {
 
     const [open, setOpen] = useState(false)
     const [image, setImage] = useState(null)
@@ -514,4 +514,4 @@ function FeedPost() {
     );
 };
 
-export default FeedPost;
+export default Job;
