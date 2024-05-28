@@ -15,5 +15,16 @@ public enum EmailType {
 	/**
 	 * Email type for reset password
 	 */
-	RESET_PASSWORD;
+	RESET_PASSWORD,
+	
+	/**
+	 * Email type for employer notification
+	 */
+	EMPLOYER_NOTIFICATION,
+	
+	
+	/**
+     * Email type for job application.
+     */
+	JOB_APPLICATION;
 }

@@ -1,5 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Paper, Container, Grid, Card, CardHeader, CardMedia, CardContent, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
+import {
+    Container, Grid, Card, CardHeader, FormControl, MenuItem, InputLabel, CardContent, CardActions, Button, Dialog, DialogTitle,
+    DialogContent, DialogActions, TextField, Select, RadioGroup, Radio, FormControlLabel, Typography
+} from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import "../css/GlobalStyle.css"
 import { Box } from '@mui/material';
@@ -10,280 +13,122 @@ import '../css/BackgroundCard.css'
 
 function Job() {
 
-    const [open, setOpen] = useState(false)
-    const [image, setImage] = useState(null)
-    const [selectedFile, setSelectedFile] = useState(null)
-    const [title, setTitle] = useState('')
-    const [summary, setSummary] = useState('')
-    const [commentsVisibility, setCommentsVisibility] = useState({})
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [jobs, setJobs] = useState([]);
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [salary, setSalary] = useState('');
+    const [vacancies, setVacancies] = useState('');
+    const [seniorityLevel, setSeniorityLevel] = useState('');
+    const [employmentType, setEmploymentType] = useState('');
+    const [currency, setCurrency] = useState('');
+    const [appliedJobs, setAppliedJobs] = useState({});
 
-    // Using the useContext hook to obtain the current context value for UserContext, and storing it in the userContext variable.
+    const jobTitles = [
+        { label: 'Software Engineeeeeeer', value: 'Software Engineeeeeeeeer' },
+        { label: 'Data Scientist', value: 'Data Scientist' },
+        { label: 'Product Manager', value: 'Product Manager' },
+    ];
+
     const userContext = useContext(UserContext);
-
-    // Accessing the currentUserData property from the userContext object to get the data of the currently logged-in user.
     const currentUserData = userContext.currentUserData;
 
-    // Accessing the updateCurrentUser function from the userContext object to have a function that updates the current user's data.
-    const updateCurrentUser = userContext.updateCurrentUser;
-
-    const [posts, setPosts] = useState([]);
-    const [likes, setLikes] = useState({});
-    const [comments, setComments] = useState({});
-    const [openComments, setOpenComments] = useState(false);
-    const [currentPostId, setCurrentPostId] = useState(null);
-    const [newCommentText, setNewCommentText] = useState('');
-
     useEffect(() => {
-        const initializeData = async () => {
-            const fetchedPosts = await fetchPosts();
-            if (fetchedPosts && fetchedPosts.length > 0) {
-                const [likesStatus, likeCounts, fetchedComments] = await Promise.all([
-                    fetchLikes(fetchedPosts),
-                    fetchLikesCount(fetchedPosts),
-                    fetchCommentsForPosts(fetchedPosts)
-
-                ]);
-                applyLikesToPosts(fetchedPosts, likesStatus, likeCounts);
-                setComments(fetchedComments);
-            }
-        };
-
-        initializeData();
+        fetchJobs();
     }, []);
 
-
-    useEffect(() => {
-        const savedLikes = localStorage.getItem('likes');
-        if (savedLikes) {
-            setLikes(JSON.parse(savedLikes));
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('likes', JSON.stringify(likes));
-    }, [likes]);
-
-    const applyLikesToPosts = (posts, likesStatus, likeCounts) => {
-        const newLikes = posts.reduce((acc, post, index) => {
-            acc[post.postId] = {
-                isLiked: likesStatus[index],
-                count: likeCounts[index],
-            };
-            return acc;
-        }, {});
-
-        setLikes({ ...newLikes });
-    };
-
-
-    const fetchPosts = async () => {
-        const response = await fetch('/api/posts');
+    const fetchJobs = async () => {
+        const response = await fetch('/api/jobs/get-job');
         const data = await response.json();
-        setPosts(data);
-        return data;
+        console.log('Fetched jobs:', data);
+        setJobs(data);
     };
 
-    const fetchLikes = async (posts) => {
-        const likesStatus = await Promise.all(posts.map(post => {
-            return fetch(`/api/likes/check?userId=${currentUserData.id}&postId=${post.postId}`)
-                .then(res => res.json())
-                .catch(err => {
-                    return false;
-                });
-        }));
-        return likesStatus;
-    };
-
-    const fetchLikesCount = async (posts) => {
-        const counts = await Promise.all(posts.map(post => {
-            return fetch(`/api/likes/count?postId=${post.postId}`)
-                .then(res => res.json())
-                .then(count => {
-                    return count || 0;
-                })
-                .catch(err => {
-                    return 0;
-                });
-        }));
-        return counts;
-    };
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
+    const handleClickOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
-        setImage(null);
-        setSelectedFile(null);
         setTitle('');
-        setSummary('');
+        setDescription('');
+        setDescription('');
+        setCity('');
+        setState('');
+        setSalary('');
+        setVacancies('');
+        setSeniorityLevel('');
+        setEmploymentType('')
+        setCurrency('')
     };
 
-    const handleTitleChange = (event) => {
-        setTitle(event.target.value);
-    };
-
-    const handleSummaryChange = (event) => {
-        setSummary(event.target.value);
-    };
-
-    const handleImageChange = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            setSelectedFile(event.target.files[0]);
-            const selectedImage = URL.createObjectURL(event.target.files[0]);
-            setImage(selectedImage);
-        }
-    };
-
+    const handleTitleChange = (event) => setTitle(event.target.value);
+    const handleDescriptionChange = (event) => setDescription(event.target.value);
+    const handleCityChange = (event) => setCity(event.target.value);
+    const handleStateChange = (event) => setState(event.target.value);
+    const handleSalaryChange = (event) => setSalary(event.target.value);
+    const handleVacanciesChange = (event) => setVacancies(event.target.value);
+    const handleSeniorityLevelChange = (event) => setSeniorityLevel(event.target.value);
+    const handleEmploymentTypeChange = (event) => setEmploymentType(event.target.value);
+    const handleCurrencyRelease = (event) => setCurrency(event.target.value);
 
     const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('content', summary);
-        formData.append('title', title);
-        formData.append('userId', currentUserData.id);
-
-        try {
-            const response = await fetch('/api/posts/upload', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Something went wrong');
-            }
-
-            const result = await response.json();
-            console.log(result);
-            handleClose();
-            fetchPosts();
-        } catch (error) {
-            console.error('Failed to submit post:', error);
-        }
-    };
-
-    const handleAddLike = async (postId) => {
-        if (!currentUserData || !currentUserData.id || !postId) {
-            console.error('User ID or Post ID is undefined:', currentUserData, postId);
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/likes/add-like`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: currentUserData.id, postId: postId })
-            });
-            if (!response.ok) {
-                const text = await response.text();
-                throw new Error(`Failed to add like: ${text}`);
-            }
-            const updatedLikeStatus = await response.json();
-
-            setLikes(prevLikes => ({
-                ...prevLikes,
-                [postId]: {
-                    count: updatedLikeStatus.totalLikes,
-                    isLiked: updatedLikeStatus.likedByUser
-                }
-            }));
-        } catch (error) {
-            console.error('Failed to add like:', error.message);
-        }
-        fetchPosts().then(fetchedPosts => {
-            fetchLikes(fetchedPosts);
-            fetchLikesCount(fetchedPosts);
-        });
-    };
-
-    const handleRemoveLike = async (postId) => {
-        if (!currentUserData || !currentUserData.id || !postId) {
-            console.error('User ID or Post ID is undefined:', currentUserData, postId);
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/likes/delete-like?userId=${currentUserData.id}&postId=${postId}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            if (!response.ok) {
-                throw new Error('Something went wrong with removing like');
-            }
-            const updatedLikeStatus = await response.json();
-            setLikes(prevLikes => ({
-                ...prevLikes,
-                [postId]: {
-                    count: updatedLikeStatus.totalLikes,
-                    isLiked: updatedLikeStatus.likedByUser
-                }
-            }));
-        } catch (error) {
-            console.error('Failed to remove like:', error);
-        }
-    };
-
-    const handleOpenComments = (postId) => {
-        setCurrentPostId(postId)
-        setOpenComments(true)
-    };
-
-    const fetchCommentsForPosts = async (posts) => {
-        const commentsByPost = {};
-        for (let post of posts) {
-            const response = await fetch(`/api/comments/get-comment?postId=${post.postId}`);
-            if (!response.ok) {
-                console.error(`Failed to fetch comments for post ${post.postId}`);
-                commentsByPost[post.postId] = [];
-                continue;
-            }
-            const data = await response.json();
-            commentsByPost[post.postId] = data;
-        }
-        return commentsByPost;
-    };
-
-
-
-    const handleAddComment = async (commentText) => {
-        if (!commentText.trim()) return;
-
-        const commentData = {
-            userId: currentUserData.id,
-            postId: currentPostId,
-            commentText: commentText.trim(),
+        const jobData = {
+            title,
+            description,
+            city,
+            state,
+            salary,
+            vacancies,
+            seniorityLevel,
+            employmentType,
+            currency,
+            userId: currentUserData.id
         };
 
         try {
-            const response = await fetch('/api/comments/add-comment', {
+            const response = await fetch('/api/jobs/post-job', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(commentData)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(jobData)
             });
-            if (!response.ok) throw new Error('Failed to add comment');
 
-            const newComment = await response.json();
-            setComments(prev => ({
-                ...prev,
-                [currentPostId]: [...(prev[currentPostId] || []), newComment]
-            }));
-            setNewCommentText('');
-            setOpenComments(false);
+            if (!response.ok) throw new Error('Failed to submit job');
+
+            handleClose();
+            fetchJobs();
         } catch (error) {
-            console.error('Failed to submit comment:', error);
+            console.error('Failed to submit job:', error);
         }
     };
 
-    const toggleCommentsVisibility = (postId) => {
-        setCommentsVisibility(prev => ({
-            ...prev,
-            [postId]: !prev[postId]
-        }));
-    };
+    const handleApply = async (jobId) => {
+        const applicationData = {
+            jobId: jobId,
+            userId: currentUserData.id
+        };
 
+        try {
+            const response = await fetch('/api/jobs/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(applicationData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to apply for job');
+            }
+
+            const responseData = await response.json();
+            setAppliedJobs(prev => ({ ...prev, [jobId]: true }));
+            alert('Application successful! A confirmation email has been sent.');
+        } catch (error) {
+            console.error('Failed to apply for job:', error);
+            alert('Failed to apply for job.');
+        }
+
+    };
 
     return (
 
@@ -309,20 +154,20 @@ function Job() {
             }}
 
             >
-                <InfiniteScroll dataLength={posts.length}>
+                <InfiniteScroll dataLength={jobs.length}>
                     <Grid container spacing={5} direction='column' justifyContent="center" alignItems="center">
-                        {posts.map((post, index) => (
+                        {jobs.map((job, index) => (
                             <Grid item xs={12} sm={6} md={4} key={index}>
                                 <Card sx={{ width: 500 }}>
                                     <CardHeader
-                                        title={post.title}
+                                        title={job.title}
                                         subheader={
                                             <Grid container alignItems="center" spacing={1}>
                                                 <Grid item>
-                                                    <SearchUserAvatar size={40} profileImagePath={post.user ? post.user.profileImagePath : null} />
+                                                    <SearchUserAvatar size={40} profileImagePath={job.user ? job.user.profileImagePath : null} />
                                                 </Grid>
                                                 <Grid item>
-                                                    {post.user ? post.user.name : 'Unknown User'}
+                                                    {job.user ? job.user.name : 'Unknown User'}
                                                 </Grid>
                                             </Grid>
                                         }
@@ -331,106 +176,61 @@ function Job() {
                                     />
 
                                     <CardContent>
-                                        {post.content.split('\n').map((line, index) => (
+                                        {job.description.split('\n').map((line, index) => (
                                             <React.Fragment key={index}>
                                                 {line}
                                                 <br />
                                             </React.Fragment>
                                         ))}
-                                    </CardContent>
 
-                                    {/* Conditionally render CardMedia only if there is an image URL */}
-                                    {post.imageUrl && (
-                                        <CardMedia component="img" height="400" image={post.imageUrl} alt={post.title} />
-                                    )}
+                                        <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+
+                                        <Grid container direction="column" alignItems="flex-start">
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Location:</strong> {job.city}, {job.state}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Employment Type:</strong> {job.employmentType}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Salary:</strong> {job.salary} {job.currency}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Vacancies:</strong> {job.vacancies}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Seniority Level:</strong> {job.seniorityLevel}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
 
                                     <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
 
                                     <CardActions>
-                                        <Button
-                                            size="small"
-                                            onClick={() => likes[post.postId]?.isLiked ? handleRemoveLike(post.postId) : handleAddLike(post.postId)}
-                                            style={{
-                                                backgroundColor: likes[post.postId]?.isLiked ? '#1976d2' : 'transparent',
-                                                color: likes[post.postId]?.isLiked ? 'white' : 'black',
-                                                border: '1px solid #1976d2'
-                                            }}
-                                        >
-                                            Like ({likes[post.postId]?.count || 0})
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            onClick={() => handleOpenComments(post.postId)}
-                                            style={{
-                                                border: '1px solid #1976d2',
-                                                color: 'white',
-                                                backgroundColor: '#1976d2'
-                                            }}
-                                        >
-                                            Comment
-                                        </Button>
-                                        {comments[post.postId] && comments[post.postId].length > 0 && (
+                                        <Grid container justifyContent="center" alignItems="center">
                                             <Button
-                                                size="small"
-                                                onClick={() => toggleCommentsVisibility(post.postId)}
+                                                onClick={() => handleApply(job.id)}
+                                                disabled={!!appliedJobs[job.id]}
                                                 style={{
-                                                    border: '1px solid #1565c0',
-                                                    color: commentsVisibility[post.postId] ? 'black' : 'white',
-                                                    backgroundColor: commentsVisibility[post.postId] ? '#e0e0e0' : '#1976d2'
+                                                    backgroundColor: appliedJobs[job.id] ? '#ccc' : '#1976d2',
+                                                    color: appliedJobs[job.id] ? '#000' : '#fff'
                                                 }}
                                             >
-                                                {commentsVisibility[post.postId] ? 'Hide Comments' : `Show Comments (${comments[post.postId].length})`}
+                                                {appliedJobs[job.id] ? 'Applied' : 'Apply'}
                                             </Button>
-                                        )}
+                                        </Grid>
+
                                     </CardActions>
-                                    {commentsVisibility[post.postId] && comments[post.postId] && (
-                                        <Box className="card-background" sx={{ p: 2, borderTop: '1px solid #ccc' }}>
-                                            {comments[post.postId].map((comment, idx) => (
-                                                <Paper
-                                                    key={idx}
-                                                    variant="outlined"
-                                                    sx={{ p: 2, mb: 1, borderColor: '#e0e0e0', display: 'flex', flexDirection: 'column' }}
-                                                >
-                                                    <Grid container wrap="nowrap" spacing={2}>
-                                                        <Grid item>
-                                                            <SearchUserAvatar size={30} profileImagePath={comment.userDto ? comment.userDto.profileImagePath : null} />
-                                                        </Grid>
-                                                        <Grid item xs zeroMinWidth>
-                                                            <Typography variant="subtitle2" noWrap>
-                                                                {comment.userDto.name}
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
-
-                                                    <Grid container sx={{ width: '100%' }}>
-
-                                                        <TextField
-                                                            autoFocus
-                                                            margin="dense"
-                                                            id='text-comment'
-                                                            type='text'
-                                                            InputProps={{
-                                                                readOnly: true,
-                                                            }}
-                                                            disabled={true}
-                                                            fullWidth
-                                                            multiline
-                                                            value={comment.commentText}
-                                                            sx={{
-                                                                '& .MuiInputBase-input.Mui-disabled': {
-                                                                    WebkitTextFillColor: 'black',
-                                                                    color: 'black',
-                                                                },
-                                                                '& .MuiInputLabel-root.Mui-disabled': {
-                                                                    color: 'black',
-                                                                },
-                                                            }}
-                                                        />
-                                                    </Grid>
-                                                </Paper>
-                                            ))}
-                                        </Box>
-                                    )}
 
                                 </Card>
                             </Grid>
@@ -440,27 +240,161 @@ function Job() {
             </Box>
 
             <Grid item style={{ padding: '50px', paddingRight: '30px', maxWidth: 'fit-content', flexGrow: 1 }}>
-                <Button variant="contained" onClick={handleClickOpen}>Add post</Button>
+                <Button variant="contained" onClick={handleClickOpen}>Add Job</Button>
             </Grid>
 
 
 
             <Dialog open={open} onClose={handleClose} PaperProps={{ className: 'custom-dialog' }}>
-                <DialogTitle>Add a new post</DialogTitle>
+                <DialogTitle>Add a new job</DialogTitle>
+
+                <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+
                 <DialogContent>
                     <Grid container justifyContent="center" alignItems="center" spacing={2} direction='column' gap='15px'>
-                        <Grid item>
-                            <TextField autoFocus margin="dense" id="title" label="Title" type="text" fullWidth onChange={handleTitleChange} variant="standard" />
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <Select
+                                    id="title"
+                                    value={title}
+                                    onChange={handleTitleChange}
+                                    displayEmpty
+                                    renderValue={selected => {
+                                        if (selected === "") {
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select Position</Typography>;
+                                        }
+                                        return selected;
+                                    }}
+                                    inputProps={{ 'aria-label': 'Without label' }}
+                                    sx={{ minWidth: 280 }}
+                                >
+                                    <MenuItem >
+
+                                    </MenuItem>
+                                    {jobTitles.map((job) => (
+                                        <MenuItem key={job.value} value={job.value}>{job.label}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </Grid>
-                        <Grid item>
-                            <TextField id="summary" label="Post summary" type="text" fullWidth onChange={handleSummaryChange} variant="outlined" multiline />
+                        <Grid item xs={50}>
+                            <TextField margin="dense" id="description" label="Description" type="text" sx={{ minWidth: 420 }} multiline onChange={handleDescriptionChange} />
                         </Grid>
-                        <Grid item>
-                            <Button variant="contained" component="label">Upload Image<input type="file" hidden onChange={handleImageChange} /></Button>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                margin="dense"
+                                id="city"
+                                label="City"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={city}
+                                onChange={handleCityChange}
+                            />
                         </Grid>
-                        {image && <Grid item><img src={image} alt="Selected" style={{ maxWidth: '100%', maxHeight: '300px' }} /></Grid>}
+                        <Grid item xs={12}>
+                            <TextField
+                                margin="dense"
+                                id="state"
+                                label="State"
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={state}
+                                onChange={handleStateChange}
+                            />
+                        </Grid>
+                        <Grid container spacing={1} alignItems="center" justifyContent="center">
+                            <Grid item xs={3}>
+                                <TextField
+                                    margin="dense"
+                                    id="salary"
+                                    label="Salary"
+                                    type="text"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={salary}
+                                    onChange={handleSalaryChange}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <FormControl fullWidth>
+
+                                    <Select
+                                        id="currency"
+                                        value={currency}
+                                        onChange={handleCurrencyRelease}
+                                        displayEmpty
+                                        renderValue={selected => {
+                                            if (selected === "") {
+                                                return <Typography style={{ color: '#7b7b7b' }}>Currency</Typography>;
+                                            }
+                                            return selected;
+                                        }}
+                                    >
+                                        <MenuItem value="USD">USD</MenuItem>
+                                        <MenuItem value="EUR">EUR</MenuItem>
+                                        <MenuItem value="RON">RON</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                margin="dense"
+                                id="vacancies"
+                                label="Vacancies"
+                                type="number"
+
+                                variant="outlined"
+                                value={vacancies}
+                                onChange={handleVacanciesChange}
+                                sx={{ width: 120 }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+
+                                <Select
+                                    id="seniorityLevel"
+                                    value={seniorityLevel}
+                                    onChange={handleSeniorityLevelChange}
+                                    displayEmpty
+                                    renderValue={selected => {
+                                        if (selected === "") {
+                                            return <Typography style={{ color: '#7b7b7b' }}>Seniority Level</Typography>;
+                                        }
+                                        return selected;
+                                    }}
+                                    inputProps={{ 'aria-label': 'Select seniority level' }}
+                                    sx={{ minWidth: 150 }}
+                                >
+                                    {['Intern', 'Junior', 'Middle', 'Senior', 'Architect'].map((level) => (
+                                        <MenuItem key={level} value={level}>{level}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl component="fieldset">
+                                <RadioGroup
+                                    row
+                                    aria-label="employment type"
+                                    name="employmentType"
+                                    value={employmentType}
+                                    onChange={handleEmploymentTypeChange}
+                                >
+                                    <FormControlLabel value="Full-Time" control={<Radio />} label="Full-time" />
+                                    <FormControlLabel value="Part-Time" control={<Radio />} label="Part-time" />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
                     </Grid>
                 </DialogContent>
+
+                <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined" style={{ borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}>
                         Cancel
@@ -471,43 +405,6 @@ function Job() {
                 </DialogActions>
 
             </Dialog>
-
-            <Dialog
-                open={openComments}
-                onClose={() => setOpenComments(false)}
-                PaperProps={{
-                    style: {
-                        width: '80%',
-                        maxHeight: '70vh'
-                    }
-                }}
-            >
-                <DialogTitle>Add a Comment</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="comment"
-                        label="Comment"
-                        type="text"
-                        multiline
-                        fullWidth
-                        value={newCommentText}
-                        onChange={(e) => setNewCommentText(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenComments(false)} variant='outlined' style={{ borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}>
-                        Cancel
-                    </Button>
-
-                    <Button onClick={() => handleAddComment(newCommentText)} variant='outlined' style={{ borderColor: '#00CC00', color: 'white', backgroundColor: '#00CC00' }}>
-                        Add Comment
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-
         </Container>
 
 

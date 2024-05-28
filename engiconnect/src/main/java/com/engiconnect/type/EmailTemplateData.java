@@ -20,11 +20,26 @@ public enum EmailTemplateData {
      */
 	TOKEN("token"),
 	
+	/**
+     * Tag for the position
+     */
+	JOB_TITLE("jobTitle"),
+	
+	/**
+     * Tag for the position
+     */
+	CV_URL("cvUrl"),
+	
+	/**
+     * Tag for the position
+     */
+	COMPANY_NAME("companyName"),
+	
     /**
      * Tag for the base URL of the application.
      */
 	BASEURL("baseUrl");
-
+	
 	/**
      * The string key used to store the actual tag.
      */

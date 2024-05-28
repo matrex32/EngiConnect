@@ -447,6 +447,9 @@ function FeedPost() {
 
             <Dialog open={open} onClose={handleClose} PaperProps={{ className: 'custom-dialog' }}>
                 <DialogTitle>Add a new post</DialogTitle>
+
+                <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+                
                 <DialogContent>
                     <Grid container justifyContent="center" alignItems="center" spacing={2} direction='column' gap='15px'>
                         <Grid item>
