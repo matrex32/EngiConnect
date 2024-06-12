@@ -455,8 +455,8 @@ function FeedPost() {
                         <Grid item>
                             <TextField autoFocus margin="dense" id="title" label="Title" type="text" fullWidth onChange={handleTitleChange} variant="standard" />
                         </Grid>
-                        <Grid item>
-                            <TextField id="summary" label="Post summary" type="text" fullWidth onChange={handleSummaryChange} variant="outlined" multiline />
+                        <Grid item xs={50}>
+                            <TextField id="summary" label="Post summary" rows={4} type="text" sx={{ minWidth: 420 }} fullWidth onChange={handleSummaryChange} variant="outlined" multiline />
                         </Grid>
                         <Grid item>
                             <Button variant="contained" component="label">Upload Image<input type="file" hidden onChange={handleImageChange} /></Button>

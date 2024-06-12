@@ -19,4 +19,7 @@ public class FileStorageConfig {
 	
 	@Value("${file.feed-upload-dir}")
 	private String feedDir;
+	
+	@Value("${file.document-dir}")
+	private String documentDir;
 }

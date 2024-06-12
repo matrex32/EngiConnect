@@ -51,7 +51,6 @@ function Job() {
         setOpen(false);
         setTitle('');
         setDescription('');
-        setDescription('');
         setCity('');
         setState('');
         setSalary('');
@@ -278,7 +277,7 @@ function Job() {
                             </FormControl>
                         </Grid>
                         <Grid item xs={50}>
-                            <TextField margin="dense" id="description" label="Description" type="text" sx={{ minWidth: 420 }} multiline onChange={handleDescriptionChange} />
+                            <TextField margin="dense" id="description"  rows={4} label="Description" type="text" sx={{ minWidth: 420 }} multiline onChange={handleDescriptionChange} />
                         </Grid>
 
                         <Grid item xs={12}>

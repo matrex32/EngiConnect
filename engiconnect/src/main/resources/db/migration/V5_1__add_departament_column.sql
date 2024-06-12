@@ -1,0 +1,2 @@
+ALTER TABLE document
+ADD COLUMN department VARCHAR(255);

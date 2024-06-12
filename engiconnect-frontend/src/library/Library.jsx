@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {
     Container, Grid, Card, CardHeader, FormControl, MenuItem, CardContent, CardActions, Button, Dialog, DialogTitle,
-    DialogContent, DialogActions, TextField, Select, RadioGroup, Radio, FormControlLabel, Typography
+    DialogContent, DialogActions, TextField, Select, Typography, InputLabel, Input
 } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import "../css/GlobalStyle.css"
@@ -14,121 +14,145 @@ import '../css/BackgroundCard.css'
 function Library() {
 
     const [open, setOpen] = useState(false);
+    const [documents, setDocuments] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [jobs, setJobs] = useState([]);
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [salary, setSalary] = useState('');
-    const [vacancies, setVacancies] = useState('');
-    const [seniorityLevel, setSeniorityLevel] = useState('');
-    const [employmentType, setEmploymentType] = useState('');
-    const [currency, setCurrency] = useState('');
-    const [appliedJobs, setAppliedJobs] = useState({});
-
-    const jobTitles = [
-        { label: 'Software Engineeeeeeer', value: 'Software Engineeeeeeeeer' },
-        { label: 'Data Scientist', value: 'Data Scientist' },
-        { label: 'Product Manager', value: 'Product Manager' },
-    ];
+    const [file, setFile] = useState(null);
+    const [department, setDepartment] = useState('');
+    const [author, setAuthor] = useState('');
 
     const userContext = useContext(UserContext);
     const currentUserData = userContext.currentUserData;
 
+    const documentTitles = [
+        { value: 'report', label: 'Report' },
+        { value: 'summary', label: 'Summary' },
+        { value: 'proposal', label: 'Proposal' }
+    ];
+
+    const departments = [
+        { value: 'engineering', label: 'Engineering' },
+        { value: 'marketing', label: 'Marketing' },
+        { value: 'human_resources', label: 'Human Resources' },
+        { value: 'finance', label: 'Finance' }
+    ];
+
+
     useEffect(() => {
-        fetchJobs();
+        fetchDocuments();
     }, []);
 
-    const fetchJobs = async () => {
-        const response = await fetch('/api/jobs/get-job');
-        const data = await response.json();
-        console.log('Fetched jobs:', data);
-        setJobs(data);
+    const fetchDocuments = async () => {
+        try {
+            const response = await fetch('/api/documents');
+            if (!response.ok) {
+                throw new Error('Failed to fetch documents');
+            }
+            const data = await response.json();
+            console.log(data);
+            if (Array.isArray(data)) {
+                setDocuments(data);
+            } else {
+                console.error('Received data is not an array', data);
+                setDocuments([]);
+            }
+        } catch (error) {
+            console.error('Fetch failed:', error);
+        }
     };
 
-    const handleClickOpen = () => setOpen(true);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleTitleChange = (event) => {
+        setTitle(event.target.value);
+    };
+
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+    };
+
+
+
     const handleClose = () => {
         setOpen(false);
         setTitle('');
         setDescription('');
-        setDescription('');
-        setCity('');
-        setState('');
-        setSalary('');
-        setVacancies('');
-        setSeniorityLevel('');
-        setEmploymentType('')
-        setCurrency('')
+        setDepartment('')
+        setAuthor('')
     };
 
-    const handleTitleChange = (event) => setTitle(event.target.value);
-    const handleDescriptionChange = (event) => setDescription(event.target.value);
-    const handleCityChange = (event) => setCity(event.target.value);
-    const handleStateChange = (event) => setState(event.target.value);
-    const handleSalaryChange = (event) => setSalary(event.target.value);
-    const handleVacanciesChange = (event) => setVacancies(event.target.value);
-    const handleSeniorityLevelChange = (event) => setSeniorityLevel(event.target.value);
-    const handleEmploymentTypeChange = (event) => setEmploymentType(event.target.value);
-    const handleCurrencyRelease = (event) => setCurrency(event.target.value);
+    const handleFileChange = (event) => setFile(event.target.files[0]);
 
     const handleSubmit = async () => {
-        const jobData = {
-            title,
-            description,
-            city,
-            state,
-            salary,
-            vacancies,
-            seniorityLevel,
-            employmentType,
-            currency,
-            userId: currentUserData.id
-        };
+        if (!file) {
+            alert('Please select a file.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('document', file);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('author', author);
+        formData.append('department', department);
 
         try {
-            const response = await fetch('/api/jobs/post-job', {
+            const response = await fetch('/api/documents/upload', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(jobData)
+                body: formData
             });
 
-            if (!response.ok) throw new Error('Failed to submit job');
-
+            if (!response.ok) throw new Error('Failed to upload document');
+            const responseData = response.json();
+            alert('Document uploaded successfully');
             handleClose();
-            fetchJobs();
+            fetchDocuments();
         } catch (error) {
-            console.error('Failed to submit job:', error);
+            console.error('Upload failed:', error);
+            alert('Failed to upload document.');
         }
     };
 
-    const handleApply = async (jobId) => {
-        const applicationData = {
-            jobId: jobId,
-            userId: currentUserData.id
-        };
-
+    const handleViewDocument = async (filename) => {
         try {
-            const response = await fetch('/api/jobs/apply', {
-                method: 'POST',
+            const response = await fetch(`/api/documents/${filename}`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(applicationData)
+                    'Accept': 'application/pdf'
+                }
             });
+            if (!response.ok) throw new Error('Failed to fetch document');
 
-            if (!response.ok) {
-                throw new Error('Failed to apply for job');
-            }
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
 
-            const responseData = await response.json();
-            setAppliedJobs(prev => ({ ...prev, [jobId]: true }));
-            alert('Application successful! A confirmation email has been sent.');
+            window.open(url, '_blank');
         } catch (error) {
-            console.error('Failed to apply for job:', error);
-            alert('Failed to apply for job.');
+            console.error('Failed to view document:', error);
+            alert('Failed to load document for viewing.');
         }
-
     };
+
+    const handleDelete = async (documentId) => {
+        try {
+            const response = await fetch(`/api/documents/delete/${documentId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.text();
+            if (response.ok) {
+                alert('Document deleted successfully');
+                fetchDocuments();
+            } else {
+                throw new Error(data || 'Failed to delete document');
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert(error.message);
+        }
+    };
+
 
     return (
 
@@ -154,20 +178,20 @@ function Library() {
             }}
 
             >
-                <InfiniteScroll dataLength={jobs.length}>
+                <InfiniteScroll dataLength={documents.length}>
                     <Grid container spacing={5} direction='column' justifyContent="center" alignItems="center">
-                        {jobs.map((job, index) => (
+                        {documents.map((document, index) => (
                             <Grid item xs={12} sm={6} md={4} key={index}>
                                 <Card sx={{ width: 500 }}>
                                     <CardHeader
-                                        title={job.title}
+                                        title={document.title}
                                         subheader={
                                             <Grid container alignItems="center" spacing={1}>
                                                 <Grid item>
-                                                    <SearchUserAvatar size={40} profileImagePath={job.user ? job.user.profileImagePath : null} />
+                                                    <SearchUserAvatar size={40} profileImagePath={document.uploader ? document.uploader.profileImagePath : null} />
                                                 </Grid>
                                                 <Grid item>
-                                                    {job.user ? job.user.name : 'Unknown User'}
+                                                    {document.uploader ? document.uploader.name : 'Unknown User'}
                                                 </Grid>
                                             </Grid>
                                         }
@@ -176,7 +200,7 @@ function Library() {
                                     />
 
                                     <CardContent>
-                                        {job.description.split('\n').map((line, index) => (
+                                        {document.description.split('\n').map((line, index) => (
                                             <React.Fragment key={index}>
                                                 {line}
                                                 <br />
@@ -186,29 +210,15 @@ function Library() {
                                         <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
 
                                         <Grid container direction="column" alignItems="flex-start">
+                                       
                                             <Grid item>
                                                 <Typography variant="body2" color="textSecondary">
-                                                    <strong>Location:</strong> {job.city}, {job.state}
+                                                    <strong>Author:</strong> {document.author}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="body2" color="textSecondary">
-                                                    <strong>Employment Type:</strong> {job.employmentType}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    <strong>Salary:</strong> {job.salary} {job.currency}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    <strong>Vacancies:</strong> {job.vacancies}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    <strong>Seniority Level:</strong> {job.seniorityLevel}
+                                                    <strong>Departament:</strong> {document.department}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -218,16 +228,25 @@ function Library() {
 
                                     <CardActions>
                                         <Grid container justifyContent="center" alignItems="center">
+
                                             <Button
-                                                onClick={() => handleApply(job.id)}
-                                                disabled={!!appliedJobs[job.id]}
-                                                style={{
-                                                    backgroundColor: appliedJobs[job.id] ? '#ccc' : '#1976d2',
-                                                    color: appliedJobs[job.id] ? '#000' : '#fff'
-                                                }}
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => handleViewDocument(document.filePath.split('/').pop())}
                                             >
-                                                {appliedJobs[job.id] ? 'Applied' : 'Apply'}
+                                                View Document
                                             </Button>
+
+                                            {currentUserData.id === document.uploader.id && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    onClick={() => handleDelete(document.documentId)}
+                                                    style={{ marginLeft: '10px' }}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            )}
                                         </Grid>
 
                                     </CardActions>
@@ -240,13 +259,13 @@ function Library() {
             </Box>
 
             <Grid item style={{ padding: '50px', paddingRight: '30px', maxWidth: 'fit-content', flexGrow: 1 }}>
-                <Button variant="contained" onClick={handleClickOpen}>Add Job</Button>
+                <Button variant="contained" onClick={handleClickOpen}>Add File</Button>
             </Grid>
 
 
 
             <Dialog open={open} onClose={handleClose} PaperProps={{ className: 'custom-dialog' }}>
-                <DialogTitle>Add a new job</DialogTitle>
+                <DialogTitle>Add a new file</DialogTitle>
 
                 <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
 
@@ -271,124 +290,57 @@ function Library() {
                                     <MenuItem >
 
                                     </MenuItem>
-                                    {jobTitles.map((job) => (
-                                        <MenuItem key={job.value} value={job.value}>{job.label}</MenuItem>
+                                    {documentTitles.map((item) => (
+                                        <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
                         </Grid>
                         <Grid item xs={50}>
-                            <TextField margin="dense" id="description" label="Description" type="text" sx={{ minWidth: 420 }} multiline onChange={handleDescriptionChange} />
+                            <TextField margin="dense" id="description" rows={4} label="Description" type="text" sx={{ minWidth: 420 }} multiline onChange={handleDescriptionChange} />
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <TextField
-                                margin="dense"
-                                id="city"
-                                label="City"
-                                type="text"
-                                fullWidth
-                                variant="outlined"
-                                value={city}
-                                onChange={handleCityChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                margin="dense"
-                                id="state"
-                                label="State"
-                                type="text"
-                                fullWidth
-                                variant="outlined"
-                                value={state}
-                                onChange={handleStateChange}
-                            />
-                        </Grid>
-                        <Grid container spacing={1} alignItems="center" justifyContent="center">
-                            <Grid item xs={3}>
-                                <TextField
-                                    margin="dense"
-                                    id="salary"
-                                    label="Salary"
-                                    type="text"
-                                    fullWidth
-                                    variant="outlined"
-                                    value={salary}
-                                    onChange={handleSalaryChange}
-                                />
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                        <TextField
+                            label="Author"
+                            value={author}
+                            onChange={e => setAuthor(e.target.value)}
+                            sx={{ mb: 2 }}
+                        />
 
-                                    <Select
-                                        id="currency"
-                                        value={currency}
-                                        onChange={handleCurrencyRelease}
-                                        displayEmpty
-                                        renderValue={selected => {
-                                            if (selected === "") {
-                                                return <Typography style={{ color: '#7b7b7b' }}>Currency</Typography>;
-                                            }
-                                            return selected;
-                                        }}
-                                    >
-                                        <MenuItem value="USD">USD</MenuItem>
-                                        <MenuItem value="EUR">EUR</MenuItem>
-                                        <MenuItem value="RON">RON</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                margin="dense"
-                                id="vacancies"
-                                label="Vacancies"
-                                type="number"
 
-                                variant="outlined"
-                                value={vacancies}
-                                onChange={handleVacanciesChange}
-                                sx={{ width: 120 }}
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <FormControl fullWidth>
-
                                 <Select
-                                    id="seniorityLevel"
-                                    value={seniorityLevel}
-                                    onChange={handleSeniorityLevelChange}
+                                    value={department}
+                                    onChange={e => setDepartment(e.target.value)}
                                     displayEmpty
                                     renderValue={selected => {
                                         if (selected === "") {
-                                            return <Typography style={{ color: '#7b7b7b' }}>Seniority Level</Typography>;
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select Departament</Typography>;
                                         }
                                         return selected;
                                     }}
-                                    inputProps={{ 'aria-label': 'Select seniority level' }}
-                                    sx={{ minWidth: 150 }}
+                                    inputProps={{ 'aria-label': 'Select departament' }}
+                                    sx={{ minWidth: 180 }}
                                 >
-                                    {['Intern', 'Junior', 'Middle', 'Senior', 'Architect'].map((level) => (
-                                        <MenuItem key={level} value={level}>{level}</MenuItem>
+                                    {departments.map(option => (
+                                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <FormControl component="fieldset">
-                                <RadioGroup
-                                    row
-                                    aria-label="employment type"
-                                    name="employmentType"
-                                    value={employmentType}
-                                    onChange={handleEmploymentTypeChange}
-                                >
-                                    <FormControlLabel value="Full-Time" control={<Radio />} label="Full-time" />
-                                    <FormControlLabel value="Part-Time" control={<Radio />} label="Part-time" />
-                                </RadioGroup>
-                            </FormControl>
+                            <Grid item>
+                                <InputLabel htmlFor="upload-file">Upload File</InputLabel>
+                                <Input
+                                    id="upload-file"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    fullWidth
+                                />
+                            </Grid>
+
                         </Grid>
                     </Grid>
                 </DialogContent>
@@ -410,5 +362,6 @@ function Library() {
 
     );
 };
+
 
 export default Library;
