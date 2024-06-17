@@ -44,12 +44,14 @@ public class DocumentController {
                                             @RequestParam("title") String title,
                                             @RequestParam("description") String description,
                                             @RequestParam("author") String author,
-                                            @RequestParam("department") String department) {
+                                            @RequestParam("department") String department,
+                                            @RequestParam("degreeType") String degreeType,
+                                            @RequestParam("specialization") String specialization) {
     	
         try {
         	User currentUser = userService.getCurrentUser();
             
-            String documentPath = documentService.saveDocument(document, title, description, author, department, currentUser);
+            String documentPath = documentService.saveDocument(document, title, description, author, department, degreeType, specialization, currentUser);
 
             DocumentDto documentDto = new DocumentDto();
             documentDto.setTitle(title);

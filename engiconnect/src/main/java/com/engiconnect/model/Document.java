@@ -39,4 +39,10 @@ public class Document {
 
     @Column(name = "uploaded_at")
     private Timestamp uploadedAt;
+    
+    @Column(name = "degree_type")
+    private String degreeType;  
+
+    @Column(name = "specialization")
+    private String specialization;  
 }

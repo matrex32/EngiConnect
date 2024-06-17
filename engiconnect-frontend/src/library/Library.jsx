@@ -20,23 +20,65 @@ function Library() {
     const [file, setFile] = useState(null);
     const [department, setDepartment] = useState('');
     const [author, setAuthor] = useState('');
+    const [degreeType, setDegreeType] = useState('');
+    const [specialization, setSpecialization] = useState('');
 
     const userContext = useContext(UserContext);
     const currentUserData = userContext.currentUserData;
 
     const documentTitles = [
-        { value: 'report', label: 'Report' },
-        { value: 'summary', label: 'Summary' },
-        { value: 'proposal', label: 'Proposal' }
+        { value: 'Electric actuators command', label: 'Comanda Acționărilor Electrice' },
+        { value: 'Microcontrollers and programmable automata', label: 'Microcontrolere și Automate Programabile' },
+        { value: 'Industrial robots', label: 'Roboți industriali' },
+        { value: 'Computer environments used for design', label: 'Medii Informatice utilizate în Proiectare' },
+        { value: 'Microprocessor systems', label: 'Sisteme cu Microprocesoare' },
+        { value: 'Electric cars I', label: 'Mașini Electrice I' },
+        { value: 'Applied informatics', label: 'Informatică Aplicată' },
+        { value: 'Electric cars II', label: 'Mașini Electrice II' },
+        { value: 'Electric actuators', label: 'Acționări Electrice' },
+        { value: 'Computer networks', label: 'Rețele Informatice' },
+        { value: 'Numerical methods', label: 'Metode Numerice' },
+        { value: 'Electromagnetic field theory', label: 'Teoria Câmpului Electromagnetic' },
+        { value: 'Electrical and electronic measurements', label: 'Măsurări Electrice și Electronice' },
+        { value: 'Electrotechnical materials', label: 'Materiale Electrotehnice' },
+        { value: 'Basics of electrical engineering', label: 'Bazele electrotehnicii' },
     ];
+    
 
     const departments = [
-        { value: 'engineering', label: 'Engineering' },
-        { value: 'marketing', label: 'Marketing' },
-        { value: 'human_resources', label: 'Human Resources' },
-        { value: 'finance', label: 'Finance' }
+        { value: 'Measurements, Electrical Devices and Static Converters', label: 'Măsurări, Aparate Electrice și Convertizoare Statice' },
+        { value: 'Electrotechnics', label: 'Electrotehnică' },
+        { value: 'Machines, Materials and Electric Drives', label: 'Mașini, Materiale și Acționări Electrice' },
+    ];    
+
+    const degreeTypes = [
+        { value: 'bachelor', label: 'Licență' },
+        { value: 'master', label: 'Master' }
     ];
 
+    const bachelorSpecializations  = [
+        { value: 'computerScience', label: 'Informatică Aplicată în Inginerie Electrică' },
+        { value: 'engineering', label: 'Sisteme Electrice' },
+        { value: 'business', label: 'Electronică de Putere și Acționări Electrice' },
+        { value: 'Instrumentație și achiziții de date', label: 'Instrumentație și achiziții de date' },
+        { value: 'Inginerie economică în domeniul electric, electronic și energetic', label: 'Inginerie economică în domeniul electric, electronic și energetic' },
+    ];
+
+    const masterSpecializations = [
+        { value: 'Analiza şi modelarea sistemelor electromagnetice', label: 'Analiza şi modelarea sistemelor electromagnetice' },
+        { value: 'Electronică de putere şi acţionări electrictrice inteligente', label: 'Electronică de putere şi acţionări electrictrice inteligente' },
+        { value: 'Ingineria produselor şi serviciilor în electrotehnică', label: 'Ingineria produselor şi serviciilor în electrotehnică' },
+        { value: 'Inginerie electrică şi informatică aplicată', label: 'Inginerie electrică şi informatică aplicată' },
+        { value: 'Sisteme electrice avansate', label: 'Sisteme electrice avansate' },
+        { value: 'Sisteme inteligente de instrumentaţie şi măsurare', label: 'Sisteme inteligente de instrumentaţie şi măsurare' }
+    ];
+
+    const [specializationOptions, setSpecializationOptions] = useState(bachelorSpecializations);
+
+    useEffect(() => {
+        handleDegreeTypeChange({ target: { value: degreeType } }); // Initialize specialization options
+    }, []);
+    
 
     useEffect(() => {
         fetchDocuments();
@@ -73,7 +115,20 @@ function Library() {
         setDescription(event.target.value);
     };
 
-
+    const handleDegreeTypeChange = (event) => {
+        const selectedDegreeType = event.target.value;
+        setDegreeType(selectedDegreeType);
+        
+        // Reset specialization when degree type changes
+        setSpecialization('');
+    
+        // Update specialization options based on degree type
+        if (selectedDegreeType === 'master') {
+            setSpecializationOptions(masterSpecializations);
+        } else {
+            setSpecializationOptions(bachelorSpecializations);
+        }
+    };
 
     const handleClose = () => {
         setOpen(false);
@@ -97,6 +152,8 @@ function Library() {
         formData.append('description', description);
         formData.append('author', author);
         formData.append('department', department);
+        formData.append('degreeType', degreeType);
+        formData.append('specialization', specialization);
 
         try {
             const response = await fetch('/api/documents/upload', {
@@ -210,7 +267,7 @@ function Library() {
                                         <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
 
                                         <Grid container direction="column" alignItems="flex-start">
-                                       
+
                                             <Grid item>
                                                 <Typography variant="body2" color="textSecondary">
                                                     <strong>Author:</strong> {document.author}
@@ -219,6 +276,16 @@ function Library() {
                                             <Grid item>
                                                 <Typography variant="body2" color="textSecondary">
                                                     <strong>Departament:</strong> {document.department}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Degree Type:</strong> {document.degreeType}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <strong>Specialization:</strong> {document.specialization}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -242,7 +309,7 @@ function Library() {
                                                     variant="contained"
                                                     color="secondary"
                                                     onClick={() => handleDelete(document.documentId)}
-                                                    style={{ marginLeft: '10px' }}
+                                                    style={{ marginLeft: '10px', borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}
                                                 >
                                                     Delete
                                                 </Button>
@@ -280,7 +347,7 @@ function Library() {
                                     displayEmpty
                                     renderValue={selected => {
                                         if (selected === "") {
-                                            return <Typography style={{ color: '#7b7b7b' }}>Select Position</Typography>;
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select the subject</Typography>;
                                         }
                                         return selected;
                                     }}
@@ -316,7 +383,7 @@ function Library() {
                                     displayEmpty
                                     renderValue={selected => {
                                         if (selected === "") {
-                                            return <Typography style={{ color: '#7b7b7b' }}>Select Departament</Typography>;
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select the departament</Typography>;
                                         }
                                         return selected;
                                     }}
@@ -329,6 +396,50 @@ function Library() {
                                 </Select>
                             </FormControl>
                         </Grid>
+
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <Select
+                                    value={degreeType}
+                                    onChange={handleDegreeTypeChange}
+                                    displayEmpty
+                                    renderValue={selected => {
+                                        if (selected === "") {
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select the Degree Type</Typography>;
+                                        }
+                                        return selected;
+                                    }}
+                                    inputProps={{ 'aria-label': 'Select the Degree Type' }}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    {degreeTypes.map(option => (
+                                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <Select
+                                    value={specialization}
+                                    onChange={e => setSpecialization(e.target.value)}
+                                    displayEmpty
+                                    renderValue={selected => {
+                                        if (selected === "") {
+                                            return <Typography style={{ color: '#7b7b7b' }}>Select the Specializaion</Typography>;
+                                        }
+                                        return selected;
+                                    }}
+                                    inputProps={{ 'aria-label': 'Select the Specialization' }}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    {specializationOptions.map(option => (
+                                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
 
                         <Grid item xs={12}>
                             <Grid item>

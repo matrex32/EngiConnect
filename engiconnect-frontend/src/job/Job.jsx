@@ -27,9 +27,21 @@ function Job() {
     const [appliedJobs, setAppliedJobs] = useState({});
 
     const jobTitles = [
-        { label: 'Software Engineeeeeeer', value: 'Software Engineeeeeeeeer' },
-        { label: 'Data Scientist', value: 'Data Scientist' },
-        { label: 'Product Manager', value: 'Product Manager' },
+        { label: 'Electrical Design Engineer', value: 'Electrical Design Engineer' },
+        { label: 'Electrical Engineer', value: 'Electrical Engineer' },
+        { label: 'Electrical Engineer Instrumentation and Automation', value: 'Electrical Engineer Instrumentation and Automation' },
+        { label: 'Design Engineer for Photovoltaic Systems', value: 'Design Engineer for Photovoltaic Systems' },
+        { label: 'Automation Engineer', value: 'Automation Engineer' },
+        { label: 'Power Systems Engineer', value: 'Power Systems Engineer' },
+        { label: 'Maintenance Engineer', value: 'Maintenance Engineer' },
+        { label: 'Control and Instrumentation Engineer', value: 'Control and Instrumentation Engineer' },
+        { label: 'Project engineer', value: 'Project engineer' },
+        { label: 'Embedded Systems Engineer', value: 'Embedded Systems Engineer' },
+        { label: 'Software Engineer for Industrial Automation', value: 'Software Engineer for Industrial Automation' },
+        { label: 'Energy Systems Information Technology Engineer', value: 'Energy Systems Information Technology Engineer' },
+        { label: 'Engineer for the Development of Control Algorithms', value: 'Engineer for the Development of Control Algorithms' },
+        { label: 'Data Engineer', value: 'Date Engineer' },
+        { label: 'Control Systems Network Engineer', value: 'Control Systems Network Engineer' },
     ];
 
     const userContext = useContext(UserContext);
@@ -369,7 +381,7 @@ function Job() {
                                     inputProps={{ 'aria-label': 'Select seniority level' }}
                                     sx={{ minWidth: 150 }}
                                 >
-                                    {['Intern', 'Junior', 'Middle', 'Senior', 'Architect'].map((level) => (
+                                    {['Internship', 'Junior, 0-2 Years of Experience', 'Middle, 2-5 Years of Experience', 'Senior. 5-10 Years of Experience', 'Architect, 10+ Years of Experience'].map((level) => (
                                         <MenuItem key={level} value={level}>{level}</MenuItem>
                                     ))}
                                 </Select>

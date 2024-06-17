@@ -25,6 +25,8 @@ public class DocumentConverter {
         documentDto.setDescription(document.getDescription());
         documentDto.setDepartment(document.getDepartment());
         documentDto.setAuthor(document.getAuthor());  
+        documentDto.setDegreeType(document.getDegreeType());
+        documentDto.setSpecialization(document.getSpecialization());
         
         if (document.getFilePath() != null && !document.getFilePath().trim().isEmpty()) {
             String baseUrl = "http://localhost:8080"; 
@@ -50,6 +52,8 @@ public class DocumentConverter {
         Document document = new Document();
         document.setTitle(documentDto.getTitle());
         document.setDescription(documentDto.getDescription());
+        document.setDegreeType(documentDto.getDegreeType());
+        document.setSpecialization(documentDto.getSpecialization());
         return document;
     }
 }

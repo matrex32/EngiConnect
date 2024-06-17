@@ -19,5 +19,6 @@ public class DocumentDto {
     private String department;
     private String author;
     private UserDto uploader;  
-    
+    private String degreeType;
+    private String specialization;
 }

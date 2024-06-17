@@ -34,7 +34,7 @@ public class DocumentService {
     @Autowired
 	private DocumentConverter documentConverter;
 
-    public String saveDocument(MultipartFile document, String title, String description, String author, String department, User user) throws IOException {
+    public String saveDocument(MultipartFile document, String title, String description, String author, String department,String degreeType, String specialization, User user) throws IOException {
         if (document.isEmpty()) {
             throw new IOException("Cannot save empty file");
         }
@@ -56,7 +56,10 @@ public class DocumentService {
         newDocument.setFilePath(filename);
         newDocument.setAuthor(author);
         newDocument.setDepartment(department);
+        newDocument.setDegreeType(filename);
         newDocument.setUploadedAt(new Timestamp(System.currentTimeMillis()));
+        newDocument.setDegreeType(degreeType);
+        newDocument.setSpecialization(specialization);
         documentRepository.save(newDocument);
 
         return Paths.get(fileStorageConfig.getDocumentDir()).relativize(filePath).toString();

@@ -464,6 +464,9 @@ function FeedPost() {
                         {image && <Grid item><img src={image} alt="Selected" style={{ maxWidth: '100%', maxHeight: '300px' }} /></Grid>}
                     </Grid>
                 </DialogContent>
+                
+                <div style={{ borderTop: '1px solid #ccc', margin: '8px 0' }}></div>
+
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined" style={{ borderColor: '#FF0000', color: 'white', backgroundColor: '#FF0000' }}>
                         Cancel
