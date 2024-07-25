@@ -27,40 +27,40 @@ function Library() {
     const currentUserData = userContext.currentUserData;
 
     const documentTitles = [
-        { value: 'Electric actuators command', label: 'Comanda Acționărilor Electrice' },
-        { value: 'Microcontrollers and programmable automata', label: 'Microcontrolere și Automate Programabile' },
-        { value: 'Industrial robots', label: 'Roboți industriali' },
-        { value: 'Computer environments used for design', label: 'Medii Informatice utilizate în Proiectare' },
-        { value: 'Microprocessor systems', label: 'Sisteme cu Microprocesoare' },
-        { value: 'Electric cars I', label: 'Mașini Electrice I' },
-        { value: 'Applied informatics', label: 'Informatică Aplicată' },
-        { value: 'Electric cars II', label: 'Mașini Electrice II' },
-        { value: 'Electric actuators', label: 'Acționări Electrice' },
-        { value: 'Computer networks', label: 'Rețele Informatice' },
-        { value: 'Numerical methods', label: 'Metode Numerice' },
-        { value: 'Electromagnetic field theory', label: 'Teoria Câmpului Electromagnetic' },
-        { value: 'Electrical and electronic measurements', label: 'Măsurări Electrice și Electronice' },
-        { value: 'Electrotechnical materials', label: 'Materiale Electrotehnice' },
-        { value: 'Basics of electrical engineering', label: 'Bazele electrotehnicii' },
+        { value: 'Comanda Acționărilor Electrice', label: 'Comanda Acționărilor Electrice' },
+        { value: 'Microcontrolere și Automate Programabile', label: 'Microcontrolere și Automate Programabile' },
+        { value: 'Roboți industriali', label: 'Roboți industriali' },
+        { value: 'Medii Informatice utilizate în Proiectare', label: 'Medii Informatice utilizate în Proiectare' },
+        { value: 'Sisteme cu Microprocesoare', label: 'Sisteme cu Microprocesoare' },
+        { value: 'Mașini Electrice I', label: 'Mașini Electrice I' },
+        { value: 'Informatică Aplicată', label: 'Informatică Aplicată' },
+        { value: 'Mașini Electrice II', label: 'Mașini Electrice II' },
+        { value: 'Acționări Electrice', label: 'Acționări Electrice' },
+        { value: 'Rețele Informatice' , label: 'Rețele Informatice' },
+        { value: 'Metode Numerice', label: 'Metode Numerice' },
+        { value: 'Teoria Câmpului Electromagnetic', label: 'Teoria Câmpului Electromagnetic' },
+        { value: 'Măsurări Electrice și Electronice', label: 'Măsurări Electrice și Electronice' },
+        { value: 'Materiale Electrotehnice', label: 'Materiale Electrotehnice' },
+        { value: 'Bazele electrotehnicii', label: 'Bazele electrotehnicii' },
     ];
     
 
     const departments = [
-        { value: 'Measurements, Electrical Devices and Static Converters', label: 'Măsurări, Aparate Electrice și Convertizoare Statice' },
-        { value: 'Electrotechnics', label: 'Electrotehnică' },
-        { value: 'Machines, Materials and Electric Drives', label: 'Mașini, Materiale și Acționări Electrice' },
+        { value: 'Măsurări, Aparate Electrice și Convertizoare Statice', label: 'Măsurări, Aparate Electrice și Convertizoare Statice' },
+        { value: 'Electrotehnică', label: 'Electrotehnică' },
+        { value: 'Mașini, Materiale și Acționări Electrice', label: 'Mașini, Materiale și Acționări Electrice' },
     ];    
 
     const degreeTypes = [
-        { value: 'bachelor', label: 'Licență' },
-        { value: 'master', label: 'Master' }
+        { value: 'Licență', label: 'Licență' },
+        { value: 'Master', label: 'Master' }
     ];
 
     const bachelorSpecializations  = [
-        { value: 'computerScience', label: 'Informatică Aplicată în Inginerie Electrică' },
-        { value: 'engineering', label: 'Sisteme Electrice' },
-        { value: 'business', label: 'Electronică de Putere și Acționări Electrice' },
-        { value: 'Instrumentație și achiziții de date', label: 'Instrumentație și achiziții de date' },
+        { value: 'Informatică Aplicată în Inginerie Electrică', label: 'Informatică Aplicată în Inginerie Electrică' },
+        { value: 'Sisteme Electrice' , label: 'Sisteme Electrice' },
+        { value: 'Electronică de Putere și Acționări Electrice' , label: 'Electronică de Putere și Acționări Electrice' },
+        { value: 'Instrumentație și achiziții de date' , label: 'Instrumentație și achiziții de date' },
         { value: 'Inginerie economică în domeniul electric, electronic și energetic', label: 'Inginerie economică în domeniul electric, electronic și energetic' },
     ];
 
@@ -123,7 +123,7 @@ function Library() {
         setSpecialization('');
     
         // Update specialization options based on degree type
-        if (selectedDegreeType === 'master') {
+        if (selectedDegreeType === 'Master') {
             setSpecializationOptions(masterSpecializations);
         } else {
             setSpecializationOptions(bachelorSpecializations);
@@ -136,6 +136,7 @@ function Library() {
         setDescription('');
         setDepartment('')
         setAuthor('')
+        setSpecialization('')
     };
 
     const handleFileChange = (event) => setFile(event.target.files[0]);

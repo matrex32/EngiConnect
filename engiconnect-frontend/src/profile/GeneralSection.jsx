@@ -288,6 +288,7 @@ export default function GeneralSection({ showMessage }) {
                             id="about-me"
                             label="About me"
                             variant="outlined"
+                            rows={3}
                             value={editedAboutMe}
                             onChange={handleAboutMeChange}
                             InputProps={{ readOnly: !isEditActive }}
