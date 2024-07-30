@@ -1,5 +1,14 @@
 Engiconnect is a social networking platform designed specifically for engineers and engineering students. It provides a space for professional interaction, information exchange, and career opportunities. The platform aims to connect professionals from various engineering fields, facilitating collaboration, continuous learning, and career development.
 
+Technology Stack and Implementation
+Engiconnect is built using a modern technology stack to ensure a robust and efficient user experience. The backend is developed with Java Spring, a powerful framework for building enterprise-level applications. The frontend is created using React, providing a dynamic and responsive user interface.
+
+Database Management
+The platform utilizes MySQL as the database management system, ensuring reliable storage and retrieval of user data and content. Flyway is used for database migrations, allowing for smooth updates and version control of the database schema.
+
+Unified Application Architecture
+Engiconnect is designed as a cohesive application, where the frontend and backend are integrated into a single deployable unit. This means that users do not need to run a separate React server for the frontend; instead, launching the Spring server handles both the backend and frontend. This unified approach simplifies deployment and ensures a seamless experience for both developers and users.
+
 Main Features
 1. Registration and Authentication
     - Users can create a new account by filling out a registration form
