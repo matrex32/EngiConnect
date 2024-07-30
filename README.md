@@ -10,7 +10,6 @@ Unified Application Architecture
 Engiconnect is designed as a cohesive application, where the frontend and backend are integrated into a single deployable unit. This means that users do not need to run a separate React server for the frontend; instead, launching the Spring server handles both the backend and frontend. This unified approach simplifies deployment and ensures a seamless experience for both developers and users.
 
 Integrated Email System
-
     - Account Creation Confirmation: An email is sent to new users to confirm the creation of their account.
     - Job Application Notifications: Users receive an email notification when they apply for a job.
     - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.   
