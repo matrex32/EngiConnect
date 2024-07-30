@@ -13,7 +13,7 @@ Integrated Email System
     - Account Creation Confirmation: An email is sent to new users to confirm the creation of their account.
     - Job Application Notifications: Users receive an email notification when they apply for a job.
     - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.   
-    - Reset password: When a user wants to reset their password, they will receive a link in their e-mail that will redirect them to the password reset page
+    - Reset password: When a user wants to reset their password, they will receive a link in their e-mail that will redirect them to the password reset page.
 
 Main Features
 1. Registration and Authentication
