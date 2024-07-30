@@ -47,8 +47,6 @@ Main Features
 
         ![Picture6](https://github.com/user-attachments/assets/5d2f5b6a-f160-4d46-ad13-4e92cf104d60)
 
-        ![Picture7](https://github.com/user-attachments/assets/00c617a8-6ed7-4986-b9f9-3f214f69d9d1)
-
         ![Picture8](https://github.com/user-attachments/assets/50234350-3057-4354-be53-1845ae798a94)
 
         ![Picture9](https://github.com/user-attachments/assets/cf2f580c-263f-4b7c-8f19-5067364f7f32)
