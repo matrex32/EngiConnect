@@ -9,12 +9,6 @@ The platform utilizes MySQL as the database management system, ensuring reliable
 Unified Application Architecture
 Engiconnect is designed as a cohesive application, where the frontend and backend are integrated into a single deployable unit. This means that users do not need to run a separate React server for the frontend; instead, launching the Spring server handles both the backend and frontend. This unified approach simplifies deployment and ensures a seamless experience for both developers and users.
 
-Integrated Email System
-    - Account Creation Confirmation: An email is sent to new users to confirm the creation of their account.
-    - Job Application Notifications: Users receive an email notification when they apply for a job.
-    - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.   
-    - Reset password: When a user wants to reset their password, they will receive a link in their e-mail that will redirect them to the password reset page.
-
 Main Features
 1. Registration and Authentication
     - Users can create a new account by filling out a registration form
@@ -29,8 +23,14 @@ Main Features
 3. Content Interaction
     - Posts: Users can create and publish posts about their projects, ideas, technical articles, or any other relevant content.
     - Likes and Comments: The ability to like and comment on other users' posts, facilitating discussions and feedback.
+    - User Search: Users have the ability to search for other users on the platform, making it easier to find and connect with specific individuals.
 4. Document Uploads
     - The option to upload technical documents, guides, manuals, or other educational resources to support learning and development in the engineering field.
 5. Career Opportunities
    - Job Applications: Users can search for and apply to various job postings from companies.
    - Job Postings: Companies and employers can post job offers, describing available positions and requirements for candidates.
+6. Integrated Email System
+   - Account Creation Confirmation: An email is sent to new users to confirm the creation of their account.
+   - Job Application Notifications: Users receive an email notification when they apply for a job.
+   - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.
+   - Reset password: When a user wants to reset their password, they will receive a link in their e-mail that will redirect them to the password reset page.
