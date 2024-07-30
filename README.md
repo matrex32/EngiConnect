@@ -34,3 +34,28 @@ Main Features
    - Job Application Notifications: Users receive an email notification when they apply for a job.
    - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.
    - Reset password: When a user wants to reset their password, they will receive a link in their e-mail that will redirect them to the password reset page.
+
+![1](https://github.com/user-attachments/assets/651e54e8-a680-4cf3-b0e6-9b028ed6101b)
+
+![2](https://github.com/user-attachments/assets/74e7d72a-1c83-4dd0-b743-fccdccefb686)
+
+![3](https://github.com/user-attachments/assets/e5600c79-d426-48b3-a452-924d4266f3d7)
+
+![Picture4](https://github.com/user-attachments/assets/0f6fe76b-d1ff-4008-95df-972213661456)
+
+![Picture5](https://github.com/user-attachments/assets/f45b3ead-0cc0-479c-a894-43e85e37589b)
+
+![Picture6](https://github.com/user-attachments/assets/5d2f5b6a-f160-4d46-ad13-4e92cf104d60)
+
+![Picture7](https://github.com/user-attachments/assets/00c617a8-6ed7-4986-b9f9-3f214f69d9d1)
+
+![Picture8](https://github.com/user-attachments/assets/50234350-3057-4354-be53-1845ae798a94)
+
+![Picture9](https://github.com/user-attachments/assets/cf2f580c-263f-4b7c-8f19-5067364f7f32)
+
+![Picture10](https://github.com/user-attachments/assets/f4d5215c-a52f-4988-8520-3afc3fa1411f)
+
+![Picture11](https://github.com/user-attachments/assets/c016570f-5a4a-4172-ad0a-bcf4d9832273)
+
+
+
