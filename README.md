@@ -9,13 +9,18 @@ The platform utilizes MySQL as the database management system, ensuring reliable
 Unified Application Architecture
 Engiconnect is designed as a cohesive application, where the frontend and backend are integrated into a single deployable unit. This means that users do not need to run a separate React server for the frontend; instead, launching the Spring server handles both the backend and frontend. This unified approach simplifies deployment and ensures a seamless experience for both developers and users.
 
+Integrated Email System
+    - Account Creation Confirmation: An email is sent to new users to confirm the creation of their account.
+    - Job Application Notifications: Users receive an email notification when they apply for a job.
+    - Employer Notifications: When an applicant applies for a job, the employer receives an email with the applicant's CV, ensuring easy access to candidate information.   
+
 Main Features
 1. Registration and Authentication
     - Users can create a new account by filling out a registration form
     - Secure authentication system for account access.
     - Password reset functionality in case of forgotten passwords.
 2. Account Settings
-    - Personal Information: Users can add or update personal information such as name, address, contact details.
+    - Personal Information: Users can add or update personal information such as name, address or contact details.
     - Profile Picture: Option to upload a profile picture for easier identification.
     - Change Password: Users can change their account password at any time.
     - Account Deletion: If a user wishes to delete their account, it will be deactivated immediately and permanently deleted after 7 days, providing a period for reconsideration.
